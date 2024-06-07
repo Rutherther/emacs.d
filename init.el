@@ -225,6 +225,9 @@
   ;; useful beyond Vertico.
   (setq read-extended-command-predicate #'command-completion-default-include-p))
 
+;; Help
+;; TODO: helpful
+
 ;; Projects
 (my-use-package projectile
   :ensure t
@@ -248,12 +251,11 @@
   :ensure t
   :init
   ;; Configure a custom style dispatcher (see the Consult wiki)
-  (setq orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch))
+  ;; (setq orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch))
   ;;       orderless-component-separator #'orderless-escapable-split-on-space)
   (setq completion-styles '(orderless basic)
         completion-category-defaults nil
         completion-category-overrides '((file (styles partial-completion)))))
-
 ;; Git
 
 
