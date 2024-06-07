@@ -4,22 +4,15 @@
 ;;
 ;; general.el
 ;;  SPC, like in DOOM
-;; flycheck
-;; pdf tools
-;; vertico config
-;; company
+;; vterm
 ;; lsp-mode? or eglot
 ;;      C, C++
 ;;      Rust
 ;;      VHDL, Verilog
 ;;      Nix
-;; Company, Vertico
-
-;; Elpaca setup
-
-;; TODO: put to conditions, etc.
-
-;; Basic keybindings, etc.
+;;      Latex + templates
+;; flycheck
+;; pdf tools
 
 (add-to-list 'load-path (locate-user-emacs-file "lisp/"))
 (require 'functions)
@@ -33,9 +26,15 @@
    (load-theme 'nordic-night t)
 )
 
-(setq display-line-numbers-type 'relative)
-(global-display-line-numbers-mode)
+(setq-default inhibit-startup-screen t)
+(setq inhibit-splash-screen t)
+(setq inhibit-startup-message t)
+(setq initial-scratch-message "")
 
+(setq display-line-numbers-type 'relative)
+(global-display-line-numbers-mode 1)
+
+;; Default editing configs
 (setq tab-width 2
 	evil-shift-width 2)
 
@@ -66,11 +65,12 @@
 (my-use-package evil
   :ensure t
   :demand t
-  :init
-  (setq evil-want-integration t)
-  (setq evil-want-keybinding nil)
+  :hook
+  (with-editor-mode-hook . evil-insert-state)
   :custom
   (evil-undo-system 'undo-redo)
+  (evil-want-integration t)
+  (evil-want-keybinding nil)
   :config
 	(my-unbind-key-in-evil-states "C-.")
 
@@ -96,7 +96,7 @@
   :ensure t
   :demand t
   :config
-  (global-evil-surround-mode t))
+  (global-evil-surround-mode 1))
 
 (my-use-package evil-goggles
   :after evil
@@ -136,7 +136,11 @@
 
 ;; TODO general
 
-;; Vertico, consult, history
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                                VERTICO, CONSULT, EMBARK                               ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (my-use-package vertico
   :ensure t
   :init
@@ -170,10 +174,9 @@
    ("C-;" . embark-dwim)        ;; good alternative: M-.
    ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
 
+  :custom
+  (prefix-help-command #'embark-prefix-help-command)
   :init
-
-  ;; Optionally replace the key help with a completing-read interface
-  (setq prefix-help-command #'embark-prefix-help-command)
 
   ;; Show the Embark target at point via Eldoc. You may adjust the
   ;; Eldoc strategy, if you want to see the documentation from
@@ -252,18 +255,29 @@
          :map minibuffer-local-map
          ("M-s" . consult-history)                 ;; orig. next-matching-history-element
          ("M-r" . consult-history))                ;; orig. previous-matching-history-element
+  :custom
+  (register-preview-delay 0.5)
+  (register-preview-function #'consult-register-format)
+  (xref-show-xrefs-function #'consult-xref)
+  (xref-show-definitions-function #'consult-xref)
+  (consult-narrow-key "<")
   :init
-  (setq register-preview-delay 0.5
-        register-preview-function #'consult-register-format)
-
   (advice-add #'register-preview :override #'consult-register-window)
-
-  (setq xref-show-xrefs-function #'consult-xref
-        xref-show-definitions-function #'consult-xref)
   :config
-  (recentf-mode 1)
-  (setq consult-narrow-key "<"))
+  (recentf-mode 1))
 
+(my-use-package orderless
+  :ensure t
+  :custom
+  ;; Configure a custom style dispatcher (see the Consult wiki)
+  ;; (setq orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch))
+  ;;       orderless-component-separator #'orderless-escapable-split-on-space)
+  (completion-styles '(orderless basic))
+  (completion-category-defaults nil)
+  (completion-category-overrides '((file (styles partial-completion))))
+)
+
+;;; NAVIGATION
 (my-use-package ace-window
   :ensure t
   :custom
@@ -278,18 +292,14 @@
   (savehist-mode))
 
 (my-use-package emacs
+  :hook
+  (minibuffer-setup-hook . cursor-intangible-mode)
+  :custom
+  (enable-recursive-minibuffers t)
+  (read-extended-command-predicate #'command-completion-default-include-p)
   :init
   (setq minibuffer-prompt-properties
-        '(read-only t cursor-intangible t face minibuffer-prompt))
-  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
-
-  ;; Support opening new minibuffers from inside existing minibuffers.
-  (setq enable-recursive-minibuffers t)
-
-  ;; Emacs 28 and newer: Hide commands in M-x which do not work in the current
-  ;; mode.  Vertico commands are hidden in normal buffers. This setting is
-  ;; useful beyond Vertico.
-  (setq read-extended-command-predicate #'command-completion-default-include-p))
+        '(read-only t cursor-intangible t face minibuffer-prompt)))
 
 ;; Help
 ;; TODO: helpful
@@ -312,16 +322,6 @@
   :demand t
   :config
   (vs-modeline-mode))
-
-(my-use-package orderless
-  :ensure t
-  :init
-  ;; Configure a custom style dispatcher (see the Consult wiki)
-  ;; (setq orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch))
-  ;;       orderless-component-separator #'orderless-escapable-split-on-space)
-  (setq completion-styles '(orderless basic)
-        completion-category-defaults nil
-        completion-category-overrides '((file (styles partial-completion)))))
 
 ;; File browser
 (my-use-package dired
