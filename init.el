@@ -1,8 +1,7 @@
-;; use straight.el for package management
+;; use elpaca.el for package management
 ;;
 ;; load envs (exec-path-from-shell)
 ;;
-;; Switch to elpaca
 ;; general.el
 ;;  SPC, like in DOOM
 ;; vertico config
@@ -13,7 +12,7 @@
 ;;      Nix
 ;; Company, Vertico
 
-;; Straight setup
+;; Elpaca setup
 
 ;; TODO: put to conditions, etc.
 
@@ -24,32 +23,53 @@
     `(eval-and-compile
        ,(cons 'use-package body))))
 
+(defvar elpaca-installer-version 0.7)
+(defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
+(defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
+(defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
+(defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
+                              :ref nil :depth 1
+                              :files (:defaults "elpaca-test.el" (:exclude "extensions"))
+                              :build (:not elpaca--activate-package)))
+(let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
+       (build (expand-file-name "elpaca/" elpaca-builds-directory))
+       (order (cdr elpaca-order))
+       (default-directory repo))
+  (add-to-list 'load-path (if (file-exists-p build) build repo))
+  (unless (file-exists-p repo)
+    (make-directory repo t)
+    (when (< emacs-major-version 28) (require 'subr-x))
+    (condition-case-unless-debug err
+        (if-let ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
+                 ((zerop (apply #'call-process `("git" nil ,buffer t "clone"
+                                                 ,@(when-let ((depth (plist-get order :depth)))
+                                                     (list (format "--depth=%d" depth) "--no-single-branch"))
+                                                 ,(plist-get order :repo) ,repo))))
+                 ((zerop (call-process "git" nil buffer t "checkout"
+                                       (or (plist-get order :ref) "--"))))
+                 (emacs (concat invocation-directory invocation-name))
+                 ((zerop (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
+                                       "--eval" "(byte-recompile-directory \".\" 0 'force)")))
+                 ((require 'elpaca))
+                 ((elpaca-generate-autoloads "elpaca" repo)))
+            (progn (message "%s" (buffer-string)) (kill-buffer buffer))
+          (error "%s" (with-current-buffer buffer (buffer-string))))
+      ((error) (warn "%s" err) (delete-directory repo 'recursive))))
+  (unless (require 'elpaca-autoloads nil t)
+    (require 'elpaca)
+    (elpaca-generate-autoloads "elpaca" repo)
+    (load "./elpaca-autoloads")))
+(add-hook 'after-init-hook #'elpaca-process-queues)
+(elpaca `(,@elpaca-order))
 
-(defconst straight-bootstrap
-  (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-
-
-(unless (file-exists-p straight-bootstrap)
-    (with-current-buffer
-	    (url-retrieve-synchronously
-	    "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-	    'silent 'inhibit-cookies)
-	(goto-char (point-max))
-	(eval-print-last-sexp)))
-
-(load straight-bootstrap)
-(require 'straight)
-
-(straight-use-package 'use-package)
-
-(require 'use-package)
-(straight-use-package-mode t)
+(elpaca elpaca-use-package
+  (elpaca-use-package-mode))
 
 ;; Basic keybindings, etc.
 (setq evil-want-keybinding nil)
 
 (my-use-package evil
-  :straight t
+  :ensure t
   :demand t
   :custom
   (evil-undo-system 'undo-redo)
@@ -58,12 +78,12 @@
 
 (my-use-package evil-collection
   :after evil
-  :straight t
+  :ensure t
   :demand t)
 
 (my-use-package evil-easymotion
   :after evil
-  :straight t
+  :ensure t
   :demand t
   :config
   (evilem-default-keybindings "\\")
@@ -71,14 +91,14 @@
 
 (my-use-package evil-surround
   :after evil
-  :straight t
+  :ensure t
   :demand t
   :config
-  (global-evil-surround-mode))
+  (global-evil-surround-mode t))
 
 (my-use-package evil-goggles
   :after evil
-  :straight t
+  :ensure t
   :demand t
   :custom
   (evil-goggles-duration 0.1)
@@ -87,20 +107,20 @@
 
 (my-use-package evil-commentary
   :after evil
-  :straight t
+  :ensure t
   :demand t
   :config
   (evil-commentary-mode))
 
 (my-use-package evil-snipe
   :after evil
-  :straight t
+  :ensure t
   :demand t
   :config
   (evil-snipe-mode))
 
 (my-use-package which-key
-  :straight t
+  :ensure t
   :demand t
   :custom
   (which-key-idle-delay 0.6)
@@ -108,7 +128,7 @@
   (which-key-mode))
 
 (my-use-package nordic-night-theme
- :straight t
+ :ensure t
  :demand t
  :config
    (load-theme 'nordic-night t)
@@ -116,12 +136,53 @@
 
 ;; Vertico, consult, history
 (my-use-package vertico
-  :straight t
+  :ensure t
   :init
   (vertico-mode))
 
+(use-package marginalia
+  :ensure t
+  :config
+  (marginalia-mode))
+
+(use-package embark
+  :ensure t
+
+  :bind
+  (("C-." . embark-act)         ;; pick some comfortable binding
+   ("C-;" . embark-dwim)        ;; good alternative: M-.
+   ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
+
+  :init
+
+  ;; Optionally replace the key help with a completing-read interface
+  (setq prefix-help-command #'embark-prefix-help-command)
+
+  ;; Show the Embark target at point via Eldoc. You may adjust the
+  ;; Eldoc strategy, if you want to see the documentation from
+  ;; multiple providers. Beware that using this can be a little
+  ;; jarring since the message shown in the minibuffer can be more
+  ;; than one line, causing the modeline to move up and down:
+
+  ;; (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
+  ;; (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
+
+  :config
+
+  ;; Hide the mode line of the Embark live/completions buffers
+  (add-to-list 'display-buffer-alist
+               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                 nil
+                 (window-parameters (mode-line-format . none)))))
+
+;; Consult users will also want the embark-consult package.
+(use-package embark-consult
+  :ensure t
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
+
 (my-use-package consult
-  :straight t
+  :ensure t
   :init
   (setq register-preview-delay 0.5
         register-preview-function #'consult-register-format)
@@ -130,7 +191,6 @@
   )
 
 (my-use-package savehist
-  :straight t
   :init
   (savehist-mode))
 
@@ -150,7 +210,7 @@
 
 ;; Modeline
 (my-use-package vs-modeline
-  :straight (vs-modeline :type git
+  :ensure (vs-modeline :type git
                          :host github
                          :repo "VojtechStep/vs-modeline.el")
 
@@ -159,7 +219,7 @@
   (vs-modeline-mode))
 
 (my-use-package orderless
-  :straight t
+  :ensure t
   :init
   ;; Configure a custom style dispatcher (see the Consult wiki)
   (setq orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch))
@@ -173,8 +233,10 @@
 
 ;; TODO: some config.
 ;; Magit todos
+(my-use-package transient
+  :ensure t)
 (my-use-package magit
-  :straight t
+  :ensure t
   :custom
   (magit-save-repository-buffers nil)
   (magit-diff-refine-hunk 'all)
@@ -217,3 +279,5 @@
 (global-display-line-numbers-mode)
 
 (setq tab-width 2)
+
+(elpaca-process-queues)
