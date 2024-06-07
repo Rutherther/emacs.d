@@ -39,6 +39,25 @@
 (setq tab-width 2
 	evil-shift-width 2)
 
+;; ENV
+(my-use-package exec-path-from-shell
+  :ensure t
+  :demand t
+  :custom
+  (exec-path-from-shell-shell-name (getenv "SHELL"))
+  (exec-path-from-shell-arguments nil)
+  (exec-path-from-shell-variables
+   '("PATH"
+     "MANPATH"
+     "CXX"
+     "CC"
+     "XDG_CONFIG_HOME"
+     "XDG_CACHE_HOME"
+     "XDG_DATA_HOME"
+     "NIX_PATH"))
+  :config
+  (exec-path-from-shell-initialize))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                            EVIL                                       ;;
