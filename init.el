@@ -1,10 +1,13 @@
-;; use elpaca.el for package management
+; use elpaca.el for package management
 ;;
 ;; load envs (exec-path-from-shell)
 ;;
 ;; general.el
 ;;  SPC, like in DOOM
+;; flycheck
+;; pdf tools
 ;; vertico config
+;; company
 ;; lsp-mode? or eglot
 ;;      C, C++
 ;;      Rust
@@ -16,68 +19,31 @@
 
 ;; TODO: put to conditions, etc.
 
-(eval-and-compile
-  (defmacro my-use-package (&rest body)
-    "Passes BODY to `use-package' and call it at comptime and runtime."
-    (declare (indent defun))
-    `(eval-and-compile
-       ,(cons 'use-package body))))
-
-(defvar elpaca-installer-version 0.7)
-(defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
-(defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
-(defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
-(defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
-                              :ref nil :depth 1
-                              :files (:defaults "elpaca-test.el" (:exclude "extensions"))
-                              :build (:not elpaca--activate-package)))
-(let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
-       (build (expand-file-name "elpaca/" elpaca-builds-directory))
-       (order (cdr elpaca-order))
-       (default-directory repo))
-  (add-to-list 'load-path (if (file-exists-p build) build repo))
-  (unless (file-exists-p repo)
-    (make-directory repo t)
-    (when (< emacs-major-version 28) (require 'subr-x))
-    (condition-case-unless-debug err
-        (if-let ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
-                 ((zerop (apply #'call-process `("git" nil ,buffer t "clone"
-                                                 ,@(when-let ((depth (plist-get order :depth)))
-                                                     (list (format "--depth=%d" depth) "--no-single-branch"))
-                                                 ,(plist-get order :repo) ,repo))))
-                 ((zerop (call-process "git" nil buffer t "checkout"
-                                       (or (plist-get order :ref) "--"))))
-                 (emacs (concat invocation-directory invocation-name))
-                 ((zerop (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
-                                       "--eval" "(byte-recompile-directory \".\" 0 'force)")))
-                 ((require 'elpaca))
-                 ((elpaca-generate-autoloads "elpaca" repo)))
-            (progn (message "%s" (buffer-string)) (kill-buffer buffer))
-          (error "%s" (with-current-buffer buffer (buffer-string))))
-      ((error) (warn "%s" err) (delete-directory repo 'recursive))))
-  (unless (require 'elpaca-autoloads nil t)
-    (require 'elpaca)
-    (elpaca-generate-autoloads "elpaca" repo)
-    (load "./elpaca-autoloads")))
-(add-hook 'after-init-hook #'elpaca-process-queues)
-(elpaca `(,@elpaca-order))
-
-(elpaca elpaca-use-package
-  (elpaca-use-package-mode))
-
 ;; Basic keybindings, etc.
-(setq my-evil-state-maps '(evil-normal-state-map
-                           evil-insert-state-map
-                           evil-visual-state-map
-                           evil-motion-state-map
-                           evil-operator-state-map
-                           evil-replace-state-map))
 
-;; Function to unbind a key in all Evil state maps
-(defun my-unbind-key-in-evil-states (key)
-  (dolist (map my-evil-state-maps)
-    (define-key (symbol-value map) (kbd key) nil)))
+(add-to-list 'load-path (locate-user-emacs-file "lisp/"))
+(require 'functions)
+(require 'elpaca)
 
+;; some visual configs
+(my-use-package nordic-night-theme
+ :ensure t
+ :demand t
+ :config
+   (load-theme 'nordic-night t)
+)
+
+(setq display-line-numbers-type 'relative)
+(global-display-line-numbers-mode)
+
+(setq tab-width 2
+	evil-shift-width 2)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                                            EVIL                                       ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (my-use-package evil
   :ensure t
   :demand t
@@ -136,6 +102,11 @@
   :config
   (evil-snipe-mode))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                                            KEYS                                       ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (my-use-package which-key
   :ensure t
   :demand t
@@ -144,12 +115,7 @@
   :config
   (which-key-mode))
 
-(my-use-package nordic-night-theme
- :ensure t
- :demand t
- :config
-   (load-theme 'nordic-night t)
-)
+;; TODO general
 
 ;; Vertico, consult, history
 (my-use-package vertico
@@ -337,11 +303,14 @@
   (setq completion-styles '(orderless basic)
         completion-category-defaults nil
         completion-category-overrides '((file (styles partial-completion)))))
+
+;; File browser
+(my-use-package dired
+  :ensure nil
+  :custom
+  (dired-dwim-target t))
+
 ;; Git
-
-
-;; TODO: some config.
-;; Magit todos
 (my-use-package transient
   :ensure t)
 (my-use-package magit
@@ -349,12 +318,7 @@
   :custom
   (magit-save-repository-buffers nil)
   (magit-diff-refine-hunk 'all)
-  (evil-collection-magit-want-horizontal-movement t)
-  :preface
-  (declare-function evil-collection-magit-setup "modes/magit/evil-collection-magit")
-  :init
-  (with-eval-after-load 'magit-repos ; magit-repos does not load magit, so the evil-collection setup is not triggered
-    (evil-collection-magit-setup)))
+  (evil-collection-magit-want-horizontal-movement t))
 (my-use-package hl-todo
   :ensure (:pin t :tag "v3.6.0"))
 (my-use-package magit-todos
@@ -397,18 +361,5 @@
 ;; Some additional stuff
 (add-hook 'write-file-hooks 'delete-trailing-whitespace nil t)
 
-;; some visual configs
-(menu-bar-mode -1)
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
-(tab-bar-mode -1)
-(blink-cursor-mode -1)
-(setq ring-bell-function #'ignore)
-
-(setq display-line-numbers-type 'relative)
-(global-display-line-numbers-mode)
-
-(setq tab-width 2
-	evil-shift-width 2)
-
+;; Last step - async
 (elpaca-process-queues)
