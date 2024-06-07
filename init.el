@@ -343,6 +343,12 @@
   (with-eval-after-load 'magit-repos ; magit-repos does not load magit, so the evil-collection setup is not triggered
     (evil-collection-magit-setup)))
 
+;; MMM mode
+(my-use-package mmm-mode
+  :ensure t
+  :config
+  (setq mmm-global-mode 'maybe))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Languages
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -358,6 +364,27 @@
   (+ 2 (current-column)))
 
 (put 'my-use-package 'lisp-indent-function 'my-use-package-indent)
+
+;; Nix
+(my-use-package nix-mode
+  :ensure t
+  :after mmm-mode
+  :mode "\\.nix\\'")
+  :config
+  (mmm-add-group 'nix-sh
+		'((sh-command
+		    :submode sh-mode
+		    :face mmm-output-submode-face
+		    :front "[^'a-zA-Z]''[^']"
+		    :back "''[^$\\']"
+		    :include-front t
+		    :front-offset 4
+		    :end-not-begin t
+		    )))
+  ;; (setq mmm-global-mode 'maybe)
+  (mmm-add-mode-ext-class 'nix-mode "\\.nix\\'" 'nix-sh)
+
+  ;;(load (expand-file-name "nix-mode-mmm.el" (file-name-directory (locate-library "nix-mode")))))
 
 ;; Some additional stuff
 (add-hook 'write-file-hooks 'delete-trailing-whitespace nil t)
