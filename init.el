@@ -264,8 +264,16 @@
         xref-show-definitions-function #'consult-xref)
   :config
   (recentf-mode 1)
-  (setq consult-narrow-key "<")
-  )
+  (setq consult-narrow-key "<"))
+
+(my-use-package ace-window
+  :ensure t
+  :custom
+  (aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+  (aw-char-position 'left)
+  (aw-leading-char-style 'char)
+  (aw-scope 'frame)
+  :bind (("M-o" . ace-window)))
 
 (my-use-package savehist
   :init
