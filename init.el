@@ -2,7 +2,6 @@
 ;;
 ;; load envs (exec-path-from-shell)
 ;;
-;; vterm
 ;; lsp-mode? or eglot
 ;;      C, C++
 ;;      Rust
@@ -418,6 +417,20 @@
   :ensure t
   :after magit
   :config (magit-todos-mode 1))
+
+;; Vterm
+(use-package vterm
+  :ensure t
+  :config
+  (add-to-list 'vterm-eval-cmds '("update-pwd" (lambda (path) (setq default-directory path))))
+
+  (push (list "find-file-below"
+            (lambda (path)
+              (if-let* ((buf (find-file-noselect path))
+                        (window (display-buffer-below-selected buf nil)))
+                  (select-window window)
+                (message "Failed to open file: %s" path))))
+      vterm-eval-cmds))
 
 ;; MMM mode
 (my-use-package mmm-mode
