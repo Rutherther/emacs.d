@@ -351,6 +351,16 @@
   :config
   (setq mmm-global-mode 'maybe))
 
+;; Completion
+(my-use-package company
+  :ensure t
+  :custom
+  (company-idle-delay nil)
+  :bind
+  ("C-SPC" . company-complete)
+  :config
+  (global-company-mode 1))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Languages
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
