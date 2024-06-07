@@ -380,24 +380,13 @@
 
 ;; Nix
 (my-use-package nix-mode
-  :ensure t
+  :ensure (nix-mode :fetcher github
+	    :repo "NixOS/nix-mode"
+	    :files (:defaults (:exclude "nix-company.el")))
   :after mmm-mode
-  :mode "\\.nix\\'")
-  :config
-  (mmm-add-group 'nix-sh
-		'((sh-command
-		    :submode sh-mode
-		    :face mmm-output-submode-face
-		    :front "[^'a-zA-Z]''[^']"
-		    :back "''[^$\\']"
-		    :include-front t
-		    :front-offset 4
-		    :end-not-begin t
-		    )))
-  ;; (setq mmm-global-mode 'maybe)
-  (mmm-add-mode-ext-class 'nix-mode "\\.nix\\'" 'nix-sh)
-
-  ;;(load (expand-file-name "nix-mode-mmm.el" (file-name-directory (locate-library "nix-mode")))))
+  :mode "\\.nix\\'"
+  :init
+  (load (expand-file-name "nix-mode-mmm.el" (file-name-directory (locate-library "nix-mode")))))
 
 ;; Some additional stuff
 (add-hook 'write-file-hooks 'delete-trailing-whitespace nil t)
