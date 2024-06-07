@@ -95,8 +95,6 @@
 (my-use-package evil
   :ensure t
   :demand t
-  :hook
-  (with-editor-mode-hook . evil-insert-state)
   :general
   (my-leader
     "u" '(universal-argument :wk "Universal argument"))
@@ -397,6 +395,8 @@
   :ensure t)
 (my-use-package magit
   :ensure t
+  :hook
+  (with-editor-mode-hook . evil-insert-state)
   :general
   (my-leader
     "g" '(nil :wk "Magit")
@@ -409,7 +409,9 @@
   ;; I don't know why, but if this is in :custom block,
   ;; magit-dispatch ends up in an error...
   (setq evil-collection-magit-want-horizontal-movement t)
-  )
+
+  (evil-set-initial-state #'git-commit-mode 'insert))
+
 (my-use-package hl-todo
   :ensure (:pin t :tag "v3.6.0"))
 (my-use-package magit-todos
