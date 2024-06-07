@@ -2,8 +2,6 @@
 ;;
 ;; load envs (exec-path-from-shell)
 ;;
-;; general.el
-;;  SPC, like in DOOM
 ;; vterm
 ;; lsp-mode? or eglot
 ;;      C, C++
@@ -56,6 +54,37 @@
      "NIX_PATH"))
   :config
   (exec-path-from-shell-initialize))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                                            KEYS                                       ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(my-use-package which-key
+  :ensure t
+  :demand t
+  :custom
+  (which-key-idle-delay 0.6)
+  :config
+  (which-key-mode 1))
+
+(my-use-package general
+  :ensure t
+  :config
+  (general-create-definer my-leader
+    :states '(motion normal)
+    :keymaps 'override
+    :prefix "SPC")
+  (general-create-definer my-local-leader
+    :states 'normal
+    :keymaps 'override
+    :prefix "SPC m")
+  (my-leader
+    "" '(nil :wk "global leader")
+    "C-g" '(keyboard-quit :wk "abort"))
+)
+
+(elpaca-wait)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -123,26 +152,13 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;                                            KEYS                                       ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(my-use-package which-key
-  :ensure t
-  :demand t
-  :custom
-  (which-key-idle-delay 0.6)
-  :config
-  (which-key-mode))
-
-;; TODO general
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                VERTICO, CONSULT, EMBARK                               ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (my-use-package vertico
   :ensure t
+  :general
+  (my-leader "'" '(vertico-repeat :wk "Last search"))
   :init
   (vertico-mode))
 
@@ -168,12 +184,14 @@
 
 (use-package embark
   :ensure t
-
+  :general
+  (my-leader
+    "." '(embark-act :wk "Act")
+    ";" '(embark-dwim :wk "Dwim"))
   :bind
   (("C-." . embark-act)         ;; pick some comfortable binding
    ("C-;" . embark-dwim)        ;; good alternative: M-.
    ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
-
   :custom
   (prefix-help-command #'embark-prefix-help-command)
   :init
@@ -203,6 +221,45 @@
 
 (my-use-package consult
   :ensure t
+  :general
+  (my-leader
+    "f" '(nil :wk "File")
+    "f f" '(find-file :wk "Find file")
+    "f l" '(consult-locate : "Locate file")
+
+    "b" '(nil :wk "Buffer")
+    "b b" '(consult-buffer :wk "Switch buffer")
+    "," '(consult-buffer :wk "Switch buffer")
+
+    "c" '(nil :wk "Mode specific")
+    "c h" '(consult-history :wk "History")
+    "c k" '(consult-kmacro :wk "Kmacro")
+    "c m" '(consult-man :wk "Man")
+    "c i" '(consult-info :wk "Info")
+
+    "p" '(consult-yank-pop :wk "Yank pop")
+
+    "g" '(nil :wk "Goto")
+    "g f" '(consult-flymake :wk "Goto flymake")
+    "g l" '(consult-goto-line :wk "Goto line")
+    "g o" '(consult-outline :wk "Goto outline")
+    "g m" '(consult-mark :wk "Goto mark")
+    "g k" '(consult-global-mark :wk "Goto global mark")
+    "g i" '(consult-imenu :wk "Goto imenu")
+    "g I" '(consult-imenu-multi :wk "Goto imenu multi")
+
+    "s" '(nil :wk "Search")
+    "s d" '(consult-find :wk "Find") 
+    "s c" '(consult-locate :wk "Locate") 
+    "s g" '(consult-grep :wk "Grep") 
+    "s G" '(consult-git-grep :wk "Git grep") 
+    "s r" '(consult-ripgrep :wk "Ripgrep") 
+    "s l" '(consult-line :wk "Line") 
+    "s L" '(consult-line-multi :wk "Line multi") 
+    "s k" '(consult-keep-lines :wk "Keep lines") 
+    "s u" '(consult-focus-lines :wk "Focus lines") 
+    "s e" '(consult-isearch-history :wk "Isearch history") 
+  )
   :bind (;; C-c bindings in `mode-specific-map'
          ("C-c M-x" . consult-mode-command)
          ("C-c h" . consult-history)
@@ -280,6 +337,11 @@
 ;;; NAVIGATION
 (my-use-package ace-window
   :ensure t
+  :general
+  (my-leader
+    "`" '(evil-switch-to-windows-last-buffer :wk "Switch to last buffer")
+    "w" '(:keymap evil-window-map :wk "Windows")
+  )
   :custom
   (aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
   (aw-char-position 'left)
@@ -289,7 +351,7 @@
 
 (my-use-package savehist
   :init
-  (savehist-mode))
+  (savehist-mode 1))
 
 (my-use-package emacs
   :hook
@@ -308,6 +370,8 @@
 (my-use-package projectile
   :ensure t
   :demand t
+  :general
+  (my-leader "p" '(:keymap projectile-command-map :wk "projectile"))
   :bind (:map projectile-mode-map
 	  ("C-c p" . projectile-command-map))
   :config
@@ -334,6 +398,8 @@
   :ensure t)
 (my-use-package magit
   :ensure t
+  :general
+  (my-leader "g g" '(magit-status :wk "Magit"))
   :custom
   (magit-save-repository-buffers nil)
   (magit-diff-refine-hunk 'all)
