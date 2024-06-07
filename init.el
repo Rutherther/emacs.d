@@ -66,14 +66,29 @@
   (elpaca-use-package-mode))
 
 ;; Basic keybindings, etc.
-(setq evil-want-keybinding nil)
+(setq my-evil-state-maps '(evil-normal-state-map
+                           evil-insert-state-map
+                           evil-visual-state-map
+                           evil-motion-state-map
+                           evil-operator-state-map
+                           evil-replace-state-map))
+
+;; Function to unbind a key in all Evil state maps
+(defun my-unbind-key-in-evil-states (key)
+  (dolist (map my-evil-state-maps)
+    (define-key (symbol-value map) (kbd key) nil)))
 
 (my-use-package evil
   :ensure t
   :demand t
+  :init
+  (setq evil-want-integration t)
+  (setq evil-want-keybinding nil)
   :custom
   (evil-undo-system 'undo-redo)
   :config
+	(my-unbind-key-in-evil-states "C-.")
+
   (evil-mode))
 
 (my-use-package evil-collection
