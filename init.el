@@ -94,7 +94,9 @@
 (my-use-package evil-collection
   :after evil
   :ensure t
-  :demand t)
+  :demand t
+  :config
+  (evil-collection-init))
 
 (my-use-package evil-easymotion
   :after evil
