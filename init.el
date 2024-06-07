@@ -295,6 +295,7 @@
 (setq display-line-numbers-type 'relative)
 (global-display-line-numbers-mode)
 
-(setq tab-width 2)
+(setq tab-width 2
+	evil-shift-width 2)
 
 (elpaca-process-queues)
