@@ -355,6 +355,12 @@
   :init
   (with-eval-after-load 'magit-repos ; magit-repos does not load magit, so the evil-collection setup is not triggered
     (evil-collection-magit-setup)))
+(my-use-package hl-todo
+  :ensure (:pin t :tag "v3.6.0"))
+(my-use-package magit-todos
+  :ensure t
+  :after magit
+  :config (magit-todos-mode 1))
 
 ;; MMM mode
 (my-use-package mmm-mode
