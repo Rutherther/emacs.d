@@ -280,17 +280,16 @@
 
 (put 'my-use-package 'lisp-indent-function 'my-use-package-indent)
 
-
 ;; Some additional stuff
 (add-hook 'write-file-hooks 'delete-trailing-whitespace nil t)
 
 ;; some visual configs
-(setq menu-bar-mode nil
-      tool-bar-mode nil
-      scroll-bar-mode nil
-      tab-bar-mode nil
-      blink-cursor-mode nil
-      ring-bell-function #'ignore)
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+(tab-bar-mode -1)
+(blink-cursor-mode -1)
+(setq ring-bell-function #'ignore)
 
 (setq display-line-numbers-type 'relative)
 (global-display-line-numbers-mode)
