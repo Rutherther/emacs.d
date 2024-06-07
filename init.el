@@ -157,6 +157,19 @@
   :init
   (vertico-mode))
 
+(my-use-package vertico-directory
+  :ensure nil
+  :after vertico
+  :bind (:map vertico-map
+	  ("C-h" . vertico-directory-up)))
+
+(my-use-package vertico-quick
+  :ensure nil
+  :after vertico
+  :bind (:map vertico-map
+	  ("M-q" . vertico-quick-insert)
+	  ("C-q" . vertico-quick-exit)))
+
 (use-package marginalia
   :ensure t
   :bind (:map minibuffer-local-map
