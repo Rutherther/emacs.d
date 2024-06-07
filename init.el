@@ -225,6 +225,15 @@
   ;; useful beyond Vertico.
   (setq read-extended-command-predicate #'command-completion-default-include-p))
 
+;; Projects
+(my-use-package projectile
+  :ensure t
+  :demand t
+  :bind (:map projectile-mode-map
+	  ("C-c p" . projectile-command-map))
+  :config
+  (projectile-mode 1))
+
 ;; Modeline
 (my-use-package vs-modeline
   :ensure (vs-modeline :type git
