@@ -81,6 +81,7 @@
     :prefix "SPC m")
   (my-leader
     "" '(nil :wk "global leader")
+    "h" '(:keymap help-map :wk "Help")
     "C-g" '(keyboard-quit :wk "abort"))
 )
 
@@ -96,6 +97,13 @@
   :demand t
   :hook
   (with-editor-mode-hook . evil-insert-state)
+  :general
+  (my-leader
+    "u" '(universal-argument :wk "Universal argument"))
+  :bind
+  (:map evil-window-map
+    ("d" . evil-window-delete)
+    ("o" . ace-window))
   :custom
   (evil-undo-system 'undo-redo)
   (evil-want-integration t)
@@ -225,6 +233,7 @@
   (my-leader
     "f" '(nil :wk "File")
     "f f" '(find-file :wk "Find file")
+    "f s" '(save-buffer :wk "Save file")
     "f l" '(consult-locate : "Locate file")
 
     "b" '(nil :wk "Buffer")
@@ -239,26 +248,16 @@
 
     "p" '(consult-yank-pop :wk "Yank pop")
 
-    "g" '(nil :wk "Goto")
-    "g f" '(consult-flymake :wk "Goto flymake")
-    "g l" '(consult-goto-line :wk "Goto line")
-    "g o" '(consult-outline :wk "Goto outline")
-    "g m" '(consult-mark :wk "Goto mark")
-    "g k" '(consult-global-mark :wk "Goto global mark")
-    "g i" '(consult-imenu :wk "Goto imenu")
-    "g I" '(consult-imenu-multi :wk "Goto imenu multi")
+    ;; "g" '(nil :wk "Goto")
+    ;; "g f" '(consult-flymake :wk "Goto flymake")
+    ;; "g l" '(consult-goto-line :wk "Goto line")
+    ;; "g o" '(consult-outline :wk "Goto outline")
+    ;; "g m" '(consult-mark :wk "Goto mark")
+    ;; "g k" '(consult-global-mark :wk "Goto global mark")
+    ;; "g i" '(consult-imenu :wk "Goto imenu")
+    ;; "g I" '(consult-imenu-multi :wk "Goto imenu multi")
 
-    "s" '(nil :wk "Search")
-    "s d" '(consult-find :wk "Find") 
-    "s c" '(consult-locate :wk "Locate") 
-    "s g" '(consult-grep :wk "Grep") 
-    "s G" '(consult-git-grep :wk "Git grep") 
-    "s r" '(consult-ripgrep :wk "Ripgrep") 
-    "s l" '(consult-line :wk "Line") 
-    "s L" '(consult-line-multi :wk "Line multi") 
-    "s k" '(consult-keep-lines :wk "Keep lines") 
-    "s u" '(consult-focus-lines :wk "Focus lines") 
-    "s e" '(consult-isearch-history :wk "Isearch history") 
+    "s" '(:keymap search-map :wk "Search")
   )
   :bind (;; C-c bindings in `mode-specific-map'
          ("C-c M-x" . consult-mode-command)
@@ -399,11 +398,18 @@
 (my-use-package magit
   :ensure t
   :general
-  (my-leader "g g" '(magit-status :wk "Magit"))
+  (my-leader
+    "g" '(nil :wk "Magit")
+    "g g" '(magit-status :wk "Magit")
+    "g /" '(magit-dispatch :wk "Dispatch"))
   :custom
-  (magit-save-repository-buffers nil)
+  (magit-save-repository-buffers 'dontask)
   (magit-diff-refine-hunk 'all)
-  (evil-collection-magit-want-horizontal-movement t))
+  :config
+  ;; I don't know why, but if this is in :custom block,
+  ;; magit-dispatch ends up in an error...
+  (setq evil-collection-magit-want-horizontal-movement t)
+  )
 (my-use-package hl-todo
   :ensure (:pin t :tag "v3.6.0"))
 (my-use-package magit-todos
