@@ -44,9 +44,28 @@
 (setq display-line-numbers-type 'relative)
 (global-display-line-numbers-mode 1)
 
+(setq-default scroll-step 1
+              scroll-margin 3
+              scroll-conservatively 101
+              hscroll-step 1
+              hscroll-margin 3)
+
+(defalias 'yes-or-no-p 'y-or-n-p)
+
+(setq-default resize-mini-windows t)
+
 ;; Default editing configs
 (setq tab-width 2
 	evil-shift-width 2)
+
+(setq create-lockfiles nil)
+(setq auto-save-default nil)
+(setq backup-directory-alist `(("." . ,(expand-file-name "saves/" no-littering-var-directory))))
+
+(setq-default tab-width 2)
+(setq-default indent-tabs-mode nil)
+(setq-default sentence-end-double-space nil)
+(setq-default truncate-lines t)
 
 ;; ENV
 (my-use-package exec-path-from-shell
@@ -539,7 +558,7 @@
   :custom
   (lsp-keymap-prefix "C-c l")
   (lsp-enable-suggest-server-download nil)
-  :hook 
+  :hook
   (lsp-mode . lsp-enable-which-key-integration)
   :commands lsp)
 
