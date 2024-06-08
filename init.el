@@ -15,6 +15,13 @@
 (require 'functions)
 (require 'elpaca-loader)
 
+(my-use-package no-littering
+  :ensure (:wait t)
+  :init
+  (setq no-littering-etc-directory (expand-file-name "stateful/config" user-emacs-directory))
+  (setq no-littering-var-directory (expand-file-name "stateful/data" user-emacs-directory))
+  :config
+  (setq savehist-file (expand-file-name "savehist.el" no-littering-var-directory)))
 
 ;; some visual configs
 (my-use-package nordic-night-theme
