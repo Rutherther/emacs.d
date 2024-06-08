@@ -543,6 +543,15 @@
   (lsp-mode . lsp-enable-which-key-integration)
   :commands lsp)
 
+(my-use-package envrc
+  :ensure t
+  :demand t
+  :general
+  (my-leader
+    "e" '(:keymap envrc-command-map :wk "Direnv"))
+  :config
+  (envrc-global-mode 1))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Languages
