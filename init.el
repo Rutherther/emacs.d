@@ -13,7 +13,8 @@
 
 (add-to-list 'load-path (locate-user-emacs-file "lisp/"))
 (require 'functions)
-(require 'elpaca)
+(require 'elpaca-loader)
+
 
 ;; some visual configs
 (my-use-package nordic-night-theme
