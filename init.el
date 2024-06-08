@@ -424,7 +424,8 @@
   (my-leader
     "g" '(nil :wk "Magit")
     "g g" '(magit-status :wk "Magit")
-    "g /" '(magit-dispatch :wk "Dispatch"))
+    "g /" '(magit-dispatch :wk "Dispatch")
+    "g b" '(magit-blame :wk "Blame"))
   :custom
   (magit-save-repository-buffers 'dontask)
   (magit-diff-refine-hunk 'all)
@@ -436,11 +437,62 @@
   (evil-set-initial-state #'git-commit-mode 'insert))
 
 (my-use-package hl-todo
-  :ensure (:pin t :tag "v3.6.0"))
+  :ensure (:pin t :tag "v3.6.0")
+  :hook
+  ((prog-mode text-mode) . hl-todo-mode)
+  :general
+  (my-local-leader hl-todo-mode-map
+    "t j" '(hl-todo-next :wk "next TODO" :jump t)
+    "t k" '(hl-todo-previous :wk "previous TODO" :jump t)))
 (my-use-package magit-todos
   :ensure t
   :after magit
   :config (magit-todos-mode 1))
+
+(my-use-package git-gutter
+  :ensure t
+  :general
+  (my-leader
+    "g p" '(git-gutter:previous-hunk :wk "Previous hunk")
+    "g n" '(git-gutter:next-hunk :wk "Next hunk")
+    "g C-g" '(git-gutter :wk "Git gutter")
+    "g v =" '(git-gutter:popup-hunk :wk "Popup hunk")
+    "g v s" '(git-gutter:stage-hunk :wk "Stage hunk")
+    "g v r" '(git-gutter:revert-hunk :wk "Revert hunk")
+    "g v SPC" '(git-gutter:mark-hunk :wk "Mark hunk"))
+  :config
+  (global-git-gutter-mode 1))
+
+(my-use-package git-timemachine
+  :ensure t
+  :general
+  (my-leader
+    "g t" '(git-timemachine-toggle :wk "Git timemachine"))
+  :config
+  (evil-define-key 'normal git-timemachine-mode-map
+    "?" 'git-timemachine-help
+    "gtc" 'git-timemachine-show-commit)
+
+  ;; Since the mapping for git-timemachine-help is not
+  ;; updated by updating the map, update it manually.
+  (transient-define-prefix git-timemachine-help ()
+    "Show online help."
+    ["Navigate"
+      [("C-k" "show previous revision" git-timemachine-show-previous-revision)
+        ("C-j" "show next revision" git-timemachine-show-next-revision)
+        ("gtg" "show nth revision" git-timemachine-show-nth-revision)
+        ("gtt" "show fuzzy revision" git-timemachine-show-revision-fuzzy)]]
+    ["Kill current revision"
+      [("gty" "kill abbreviated revision" git-timemachine-kill-abbreviated-revision)
+        ("gtY" "kill revision" git-timemachine-kill-revision)]]
+    ["Misc"
+      [("gtb" "blame current revision" git-timemachine-blame)
+        ("gtc" "show commit" git-timemachine-show-commit)
+        ("?" "show help" git-timemachine-help)
+        ("q" "quit" git-timemachine-quit)]])
+  )
+
+;; Git timemachine, ...
 
 ;; Editing
 (use-package flycheck
@@ -530,3 +582,4 @@
 
 ;; Last step - async
 (elpaca-process-queues)
+(elpaca-wait)
