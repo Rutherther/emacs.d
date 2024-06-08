@@ -76,7 +76,7 @@
   (which-key-mode 1))
 
 (my-use-package general
-  :ensure t
+  :ensure (:wait t) ; Adds general use-package keyword
   :config
   (general-create-definer my-leader
     :states '(motion normal)
@@ -91,8 +91,6 @@
     "h" '(:keymap help-map :wk "Help")
     "C-g" '(keyboard-quit :wk "abort"))
 )
-
-(elpaca-wait)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
