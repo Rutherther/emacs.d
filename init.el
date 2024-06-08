@@ -1,14 +1,6 @@
-; use elpaca.el for package management
-;;
-;; load envs (exec-path-from-shell)
-;;
-;; lsp-mode? or eglot
 ;;      C, C++
-;;      Rust
 ;;      VHDL, Verilog
-;;      Nix
 ;;      Latex + templates
-;; flycheck
 ;; pdf tools
 
 (add-to-list 'load-path (locate-user-emacs-file "lisp/"))
@@ -403,7 +395,17 @@
         '(read-only t cursor-intangible t face minibuffer-prompt)))
 
 ;; Help
-;; TODO: helpful
+(my-use-package helpful
+  :ensure t
+  :general
+  (my-leader
+    "d d" '(helpful-at-point))
+  :bind (
+    ([remap describe-function] . helpful-function)
+    ([remap describe-variable] . helpful-variable)
+    ([remap describe-key] . helpful-key)
+    ([remap describe-command] . helpful-command)
+    ([remap describe-symbol] . helpful-symbol)))
 
 ;; Projects
 (my-use-package projectile
