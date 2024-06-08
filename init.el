@@ -437,6 +437,12 @@
   :after magit
   :config (magit-todos-mode 1))
 
+;; Editing
+(use-package flycheck
+  :ensure t
+  :config
+  (global-flycheck-mode 1))
+
 ;; Vterm
 (use-package vterm
   :ensure t
