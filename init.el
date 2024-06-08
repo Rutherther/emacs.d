@@ -17,11 +17,16 @@
 
 (my-use-package no-littering
   :ensure (:wait t)
+  :demand t
   :init
   (setq no-littering-etc-directory (expand-file-name "stateful/config" user-emacs-directory))
   (setq no-littering-var-directory (expand-file-name "stateful/data" user-emacs-directory))
   :config
-  (setq savehist-file (expand-file-name "savehist.el" no-littering-var-directory)))
+  ;; (setq savehist-file (expand-file-name "savehist.el" no-littering-var-directory))
+  ;; (setq recentf-save-file (expand-file-name "recentf-save.el" no-littering-var-directory))
+  ;; (setq transient-history-file))
+  )
+(elpaca-wait)
 
 ;; some visual configs
 (my-use-package nordic-night-theme
