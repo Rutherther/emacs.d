@@ -473,6 +473,20 @@
   :config
   (global-company-mode 1))
 
+;; Programming
+(my-use-package lsp-mode
+  :ensure t
+  :general
+  (my-leader
+    "l" '(:keymap lsp-command-map :wk "LSP"))
+  :custom
+  (lsp-keymap-prefix "C-c l")
+  (lsp-enable-suggest-server-download nil)
+  :hook 
+  (lsp-mode . lsp-enable-which-key-integration)
+  :commands lsp)
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Languages
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -497,6 +511,13 @@
   :after mmm-mode
   :mode "\\.nix\\'"
   :init
+  (load (expand-file-name "nix-mode-mmm.el" (file-name-directory (locate-library "nix-mode")))))
+
+;; Rust
+(my-use-package rustic
+  :ensure t
+  :init
+  (add-to-list 'auto-mode-alist '("\\.rs\\'" . rustic-mode))
   (load (expand-file-name "nix-mode-mmm.el" (file-name-directory (locate-library "nix-mode")))))
 
 ;; Some additional stuff
