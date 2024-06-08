@@ -168,10 +168,23 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (my-use-package vertico
   :ensure t
+  :after savehist
+  :hook
+  (minibuffer-setup . vertico-repeat-save)
+  :bind (:map vertico-map
+	  ("M-P" . vertico-repeat-previous)
+	  ("M-N" . vertico-repeat-next)
+	  ("S-<prior>" . vertico-repeat-previous)
+	  ("S-<next>" . vertico-repeat-next)
+
+	  ("?" . minibuffer-completion-help)
+	  ("M-RET" . minibuffer-force-complete-and-exit)
+	  ("M-TAB" . minibuffer-complete))
   :general
   (my-leader "'" '(vertico-repeat :wk "Last search"))
   :init
-  (vertico-mode))
+  (vertico-mode 1)
+  (add-to-list 'savehist-additional-variables 'vertico-repeat-history))
 
 (my-use-package vertico-directory
   :ensure nil
@@ -357,7 +370,7 @@
 
 (my-use-package emacs
   :hook
-  (minibuffer-setup-hook . cursor-intangible-mode)
+  (minibuffer-setup . cursor-intangible-mode)
   :custom
   (enable-recursive-minibuffers t)
   (read-extended-command-predicate #'command-completion-default-include-p)
@@ -401,7 +414,7 @@
 (my-use-package magit
   :ensure t
   :hook
-  (with-editor-mode-hook . evil-insert-state)
+  (with-editor-mode . evil-insert-state)
   :general
   (my-leader
     "g" '(nil :wk "Magit")
