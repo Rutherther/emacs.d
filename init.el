@@ -47,9 +47,6 @@
 (setq-default resize-mini-windows t)
 
 ;; Default editing configs
-(setq tab-width 2
-	evil-shift-width 2)
-
 (setq create-lockfiles nil)
 (setq auto-save-default nil)
 (setq backup-directory-alist `(("." . ,(expand-file-name "saves/" no-littering-var-directory))))
@@ -265,11 +262,13 @@
   (my-leader
     "f" '(nil :wk "File")
     "f f" '(find-file :wk "Find file")
+    "f r" '(consult-recent-file :wk "Recent file")
     "f s" '(save-buffer :wk "Save file")
     "f l" '(consult-locate : "Locate file")
 
     "b" '(nil :wk "Buffer")
     "b b" '(consult-buffer :wk "Switch buffer")
+    "b B" '(consult-project-buffer :wk "Switch project buffer")
     "," '(consult-buffer :wk "Switch buffer")
 
     "c" '(nil :wk "Mode specific")
@@ -278,7 +277,7 @@
     "c m" '(consult-man :wk "Man")
     "c i" '(consult-info :wk "Info")
 
-    "p" '(consult-yank-pop :wk "Yank pop")
+    "y" '(consult-yank-pop :wk "Yank pop")
 
     ;; "g" '(nil :wk "Goto")
     ;; "g f" '(consult-flymake :wk "Goto flymake")
@@ -387,10 +386,13 @@
 (my-use-package emacs
   :hook
   (minibuffer-setup . cursor-intangible-mode)
+  :general
+  (my-leader "n" '(:keymap narrow-map :wk "Narrowing"))
   :custom
   (enable-recursive-minibuffers t)
   (read-extended-command-predicate #'command-completion-default-include-p)
   :init
+  (put 'narrow-to-region 'disabled nil)
   (setq minibuffer-prompt-properties
         '(read-only t cursor-intangible t face minibuffer-prompt)))
 
@@ -411,6 +413,11 @@
 (my-use-package projectile
   :ensure t
   :demand t
+  :custom
+  (projectile-switch-project-action 'projectile-dired)
+  (projectile-completion-system 'default)
+  (projectile-current-project-on-switch 'keep)
+  (evil-shift-width tab-width)
   :general
   (my-leader "p" '(:keymap projectile-command-map :wk "projectile"))
   :bind (:map projectile-mode-map
