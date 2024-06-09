@@ -592,10 +592,19 @@
   :config
   (envrc-global-mode 1))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Languages
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; PDF tools
+(my-use-package pdf-tools
+  :ensure nil ;; TODO: how to manage this?
+              ;; I have this package installed via
+              ;; my distribution. To get the executables
+              ;; properly
+  :mode ("\\.pdf\\'" . pdf-view-mode)
+  :commands pdf-view-mode
+  )
 
 ;; Lisp
 (my-use-package elisp-mode
