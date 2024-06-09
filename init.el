@@ -441,6 +441,18 @@
   :custom
   (dired-dwim-target t))
 
+(my-use-package diredfl
+  :ensure t
+  :config
+  (diredfl-global-mode))
+
+(my-use-package fd-dired
+  :ensure t
+  :general
+  (my-leader
+    "s d" '(fd-dired :wk "Search dired")
+    "s D" '(fd-grep-dired :wk "Search contents dired")))
+
 ;; Git
 (my-use-package transient
   :ensure t)
