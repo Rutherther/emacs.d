@@ -46,6 +46,14 @@
 
 (setq-default resize-mini-windows t)
 
+(my-use-package whitespace
+  :hook
+  ((before-save . whitespace-cleanup)
+   ((prog-mode text-mode) . whitespace-mode))
+  :config
+  (setq whitespace-line-column 80) ;; limit line length
+  (setq whitespace-style '(face tabs empty trailing lines-tail)))
+
 ;; Default editing configs
 (setq create-lockfiles nil)
 (setq auto-save-default nil)
@@ -253,10 +261,14 @@
                  (window-parameters (mode-line-format . none)))))
 
 ;; Consult users will also want the embark-consult package.
-(use-package embark-consult
+(my-use-package embark-consult
   :ensure t
+  :bind (:map search-map
+          ("s" . consult-ripgrep-all))
   :hook
-  (embark-collect-mode . consult-preview-at-point-mode))
+  ((embark-collect-mode . consult-preview-at-point-mode))
+  :init
+  (require 'consult-ripgrep-all))
 
 (my-use-package consult
   :ensure t
@@ -390,6 +402,8 @@
   (minibuffer-setup . cursor-intangible-mode)
   :general
   (my-leader "n" '(:keymap narrow-map :wk "Narrowing"))
+  :bind
+  (("C-x C-b" . ibuffer))
   :custom
   (enable-recursive-minibuffers t)
   (read-extended-command-predicate #'command-completion-default-include-p)
@@ -440,6 +454,9 @@
 ;; File browser
 (my-use-package dired
   :ensure nil
+  :general
+  (my-leader
+    "o d" '(dired-jump :wk "Dired"))
   :custom
   (dired-dwim-target t))
 
@@ -447,7 +464,6 @@
   :ensure t
   :config
   (diredfl-global-mode))
-;; TODO test
 
 (my-use-package fd-dired
   :ensure t
@@ -455,6 +471,29 @@
   (my-leader
     "s d" '(fd-dired :wk "Search dired")
     "s D" '(fd-grep-dired :wk "Search contents dired")))
+
+(my-use-package dired-filter
+  :ensure t)
+
+(my-use-package dired-subtree
+  :ensure t)
+
+(my-use-package dired-ranger
+  :ensure t
+;; TODO: config of move, copy etc.
+)
+
+(my-use-package dired-narrow
+  :ensure t)
+
+(my-use-package dired-collapse
+  :ensure t
+  :hook
+  (dired-mode . dired-collapse-mode))
+
+;; TODO: Use this?
+;; (my-use-package dirvish
+;;   :ensure t)
 
 ;; Git
 (my-use-package transient
@@ -640,9 +679,6 @@
   :init
   (add-to-list 'auto-mode-alist '("\\.rs\\'" . rustic-mode))
   (load (expand-file-name "nix-mode-mmm.el" (file-name-directory (locate-library "nix-mode")))))
-
-;; Some additional stuff
-(add-hook 'write-file-hooks 'delete-trailing-whitespace nil t)
 
 ;; Last step - async
 (elpaca-process-queues)
