@@ -644,4 +644,5 @@
 
 ;; Last step - async
 (elpaca-process-queues)
-(elpaca-wait)
+
+(setq warning-minimum-level :error)
