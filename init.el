@@ -190,8 +190,10 @@
 	  ("S-<prior>" . vertico-repeat-previous)
 	  ("S-<next>" . vertico-repeat-next)
 
+    ;; Exit without substituting selected
+    ("M-RET" . vertico-exit-input)
+
 	  ("?" . minibuffer-completion-help)
-	  ("M-RET" . minibuffer-force-complete-and-exit)
 	  ("M-TAB" . minibuffer-complete))
   :general
   (my-leader "'" '(vertico-repeat :wk "Last search"))
