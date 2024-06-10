@@ -445,6 +445,7 @@
   :ensure t
   :config
   (diredfl-global-mode))
+;; TODO test
 
 (my-use-package fd-dired
   :ensure t
