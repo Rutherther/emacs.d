@@ -603,6 +603,9 @@
               ;; I have this package installed via
               ;; my distribution. To get the executables
               ;; properly
+  :hook
+  (doc-view-mode . (lambda () (display-line-numbers-mode -1)))
+  (pdf-view-mode . (lambda () (display-line-numbers-mode -1)))
   :mode ("\\.pdf\\'" . pdf-view-mode)
   :commands pdf-view-mode
   )
