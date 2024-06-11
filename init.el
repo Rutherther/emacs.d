@@ -21,11 +21,11 @@
 (elpaca-wait)
 
 ;; some visual configs
-(my-use-package nordic-night-theme
+(my-use-package gruvbox-theme
  :ensure t
  :demand t
  :config
-   (load-theme 'nordic-night t)
+   (load-theme 'gruvbox-dark-hard t)
 )
 
 (setq-default inhibit-startup-screen t)
