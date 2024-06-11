@@ -682,6 +682,73 @@
   :init
   (add-to-list 'auto-mode-alist '("\\.rs\\'" . rustic-mode)))
 
+;; VHDL
+(my-use-package vhdl-mode
+  :ensure nil
+  :mode
+  ("\\.vhd\\'" . vhdl-mode)
+  :hook
+  ((vhdl-mode . lsp-deferred) ;; defer because of envrc
+   (vhdl-mode . vhdl-electric-mode)
+   (vhdl-mode . vhdl-stutter-mode))
+  :custom
+  (vhdl-clock-edge-condition 'function)
+  (vhdl-clock-name "clk_i")
+  (vhdl-reset-kind 'sync)
+  (vhdl-reset-name "rst_in")
+  (vhdl-basic-offset 2)
+  (lsp-vhdl-server 'vhdl-ls))
+
+;; Verilog
+
+(my-use-package verilog-mode
+  :ensure nil
+  :mode
+  ("\\.v\\'" . verilog-mode)
+  ("\\.sv\\'" . verilog-mode)
+  :custom
+  (verilog-indent-lists nil)
+  (verilog-indent-level 2)
+  (verilog-indent-level-behavioral 2)
+  (verilog-indent-level-declaration 2)
+  (verilog-indent-level-module 2)
+  (verilog-case-indent 2)
+  (verilog-cexp-indent 2)
+  (verilog-align-ifelse t)
+  (verilog-auto-delete-trailing-whitespace t)
+  (verilog-auto-newline nil)
+  (verilog-auto-save-policy nil)
+  (verilog-auto-template-warn-unused t)
+  (verilog-tab-to-comment t)
+  (verilog-highlight-modules t)
+  (verilog-highlight-grouping-keywords t)
+)
+
+;; (my-use-package verilog-ext
+;;   :ensure t
+;;   :hook
+;;   (verilog-mode . verilog-ext-mode)
+;;   :custom
+;;   (verilog-ext-feature-list
+;;         '(font-lock
+;;           xref
+;;           capf
+;;           hierarchy
+;;           lsp
+;;           navigation
+;;           template
+;;           formatter
+;;           compilation
+;;           imenu
+;;           which-func
+;;           hideshow
+;;           typedefs
+;;           time-stamp
+;;           block-end-comments
+;;           ports))
+;;   :config
+;;   (verilog-ext-mode-setup))
+
 ;; Last step - async
 (elpaca-process-queues)
 
