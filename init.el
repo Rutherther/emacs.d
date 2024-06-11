@@ -129,6 +129,7 @@
     ("d" . evil-window-delete)
     ("o" . ace-window))
   :custom
+  (evil-want-Y-yank-to-eol t)
   (evil-undo-system 'undo-redo)
   (evil-want-integration t)
   (evil-want-keybinding nil)
