@@ -653,16 +653,16 @@
   )
 
 ;; Lisp
-(my-use-package elisp-mode
-  :custom
-  (lisp-indent-offset 2))
+;; (my-use-package elisp-mode
+;;   :custom
+;;   (lisp-indent-offset 2))
 
-(defun my-use-package-indent (indent-point state)
-  "Indent always by two"
-  (goto-char (elt state 1))
-  (+ 2 (current-column)))
+;; (defun my-use-package-indent (indent-point state)
+;;   "Indent always by two"
+;;   (goto-char (elt state 1))
+;;   (+ 2 (current-column)))
 
-(put 'my-use-package 'lisp-indent-function 'my-use-package-indent)
+;; (put 'my-use-package 'lisp-indent-function 'my-use-package-indent)
 
 ;; Nix
 (my-use-package nix-mode
