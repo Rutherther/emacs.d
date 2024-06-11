@@ -598,10 +598,10 @@
       vterm-eval-cmds))
 
 ;; MMM mode
-(my-use-package mmm-mode
-  :ensure t
-  :config
-  (setq mmm-global-mode 'maybe))
+;; (my-use-package mmm-mode
+;;   :ensure t
+;;   :config
+;;   (setq mmm-global-mode 'maybe))
 
 ;; Completion
 (my-use-package company
@@ -666,20 +666,21 @@
 
 ;; Nix
 (my-use-package nix-mode
-  :ensure (nix-mode :fetcher github
-	    :repo "NixOS/nix-mode"
-	    :files (:defaults (:exclude "nix-company.el")))
+  :ensure t
+  ;; :ensure (nix-mode :fetcher github
+	;;     :repo "NixOS/nix-mode"
+	;;     :files (:defaults (:exclude "nix-company.el")))
   :after mmm-mode
   :mode "\\.nix\\'"
   :init
-  (load (expand-file-name "nix-mode-mmm.el" (file-name-directory (locate-library "nix-mode")))))
+  ;; (load (expand-file-name "nix-mode-mmm.el" (file-name-directory (locate-library "nix-mode"))))
+  )
 
 ;; Rust
 (my-use-package rustic
   :ensure t
   :init
-  (add-to-list 'auto-mode-alist '("\\.rs\\'" . rustic-mode))
-  (load (expand-file-name "nix-mode-mmm.el" (file-name-directory (locate-library "nix-mode")))))
+  (add-to-list 'auto-mode-alist '("\\.rs\\'" . rustic-mode)))
 
 ;; Last step - async
 (elpaca-process-queues)
