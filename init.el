@@ -700,7 +700,7 @@
   ;; :ensure (nix-mode :fetcher github
 	;;     :repo "NixOS/nix-mode"
 	;;     :files (:defaults (:exclude "nix-company.el")))
-  :after mmm-mode
+  ;; :after mmm-mode
   :mode "\\.nix\\'"
   :init
   ;; (load (expand-file-name "nix-mode-mmm.el" (file-name-directory (locate-library "nix-mode"))))
