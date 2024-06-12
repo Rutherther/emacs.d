@@ -475,6 +475,7 @@
 
 (my-use-package fd-dired
   :ensure t
+  :commands (fd-dired fd-grep-dired)
   :general
   (my-leader
     "s d" '(fd-dired :wk "Search dired")
