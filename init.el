@@ -286,11 +286,10 @@
     "b B" '(consult-project-buffer :wk "Switch project buffer")
     "," '(consult-buffer :wk "Switch buffer")
 
-    "c" '(nil :wk "Mode specific")
-    "c h" '(consult-history :wk "History")
-    "c k" '(consult-kmacro :wk "Kmacro")
-    "c m" '(consult-man :wk "Man")
-    "c i" '(consult-info :wk "Info")
+    "d h" '(consult-history :wk "Consult history")
+    "d k" '(consult-kmacro :wk "Consult kmacro")
+    "d m" '(consult-man :wk "Consult uan")
+    "d i" '(consult-info :wk "Consult info")
 
     "y" '(consult-yank-pop :wk "Yank pop")
 
@@ -425,7 +424,7 @@
   :ensure t
   :general
   (my-leader
-    "d d" '(helpful-at-point))
+    "d d" '(helpful-at-point :wk "Helpful at point"))
   :bind (
     ([remap describe-function] . helpful-function)
     ([remap describe-variable] . helpful-variable)
@@ -583,8 +582,6 @@
         ("q" "quit" git-timemachine-quit)]])
   )
 
-;; Git timemachine, ...
-
 ;; Editing
 (use-package flycheck
   :ensure t
@@ -611,15 +608,58 @@
 ;;   :config
 ;;   (setq mmm-global-mode 'maybe))
 
-;; Completion
-(my-use-package company
+(my-use-package corfu
   :ensure t
-  :custom
-  (company-idle-delay nil)
+  :commands completion-at-point
   :bind
-  ("C-SPC" . company-complete)
+  ("M-m" . corfu-move-to-minibuffer)
+  ("C-SPC" . completion-at-point)
+  (:map corfu-map
+          ("M-q" . corfu-quick-complete)
+          ("C-q" . corfu-quick-complete)
+          ("M-SPC" . corfu-insert-separator))
+  :custom
+  (corfu-cycle t)
+  (corfu-quit-no-match 'separator)
+  (completion-cycle-threshold 3)
+  :init
+  (defun corfu-move-to-minibuffer ()
+      (interactive)
+      (pcase completion-in-region--data
+        (`(,beg ,end ,table ,pred ,extras)
+        (let ((completion-extra-properties extras)
+              completion-cycle-threshold completion-cycling)
+          (consult-completion-in-region beg end table pred)))))
+  (global-corfu-mode 1)
   :config
-  (global-company-mode 1))
+  (add-to-list 'corfu-continue-commands #'corfu-move-to-minibuffer))
+
+(use-package cape
+  :ensure t
+  :demand t
+  :init
+  (defun kb/cape-capf-setup-git-commit ()
+    (let ((result))
+      (dolist (element '(cape-symbol cape-dabbrev) result)
+        (add-to-list 'completion-at-point-functions element))))
+  :general(:prefix "M-p"
+            "p" 'completion-at-point
+            "t" 'complete-tag   ; etags
+            "d" 'cape-dabbrev   ; basically `dabbrev-completion'
+            "h" 'cape-history
+            "f" 'cape-file
+            "k" 'cape-keyword
+            "s" 'cape-symbol
+            "a" 'cape-abbrev
+            "i" 'cape-ispell
+            "l" 'cape-line
+            ":" 'cape-emoji
+            "w" 'cape-dict
+            "\\" 'cape-tex
+            "_" 'cape-tex
+            "^" 'cape-tex
+            "&" 'cape-sgml
+            "r" 'cape-rfc1345))
 
 ;; Programming
 (my-use-package lsp-mode
