@@ -779,7 +779,4 @@
 ;;   :config
 ;;   (verilog-ext-mode-setup))
 
-;; Last step - async
-(elpaca-process-queues)
-
 (setq warning-minimum-level :error)
