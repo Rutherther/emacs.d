@@ -436,7 +436,7 @@
 ;; Projects
 (my-use-package projectile
   :ensure t
-  :demand t
+  :commands projectile-project-root
   :custom
   (projectile-switch-project-action 'projectile-dired)
   (projectile-completion-system 'default)
