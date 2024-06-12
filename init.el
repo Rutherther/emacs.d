@@ -623,15 +623,37 @@
 ;; Programming
 (my-use-package lsp-mode
   :ensure t
+  :commands lsp
   :general
   (my-leader
     "l" '(:keymap lsp-command-map :wk "LSP"))
   :custom
   (lsp-keymap-prefix "C-c l")
+
+  (lsp-enable-snippet nil)
+
+  ;; Handled by envrc
   (lsp-enable-suggest-server-download nil)
+
+  ;; Speed-up
+  (lsp-log-io nil)
+  ;; (lsp-diagnostic-package :none)
+  (lsp-enable-snippet nil)
+  (lsp-enable-symbol-highlighting nil)
+  (lsp-enable-links nil)
+  (lsp-restart 'auto-restart)
   :hook
   (lsp-mode . lsp-enable-which-key-integration)
-  :commands lsp)
+  :config
+  ;; don't ping LSP lanaguage server too frequently
+  (defvar lsp-on-touch-time 0)
+  (defadvice lsp-on-change (around lsp-on-change-hack activate)
+    ;; don't run `lsp-on-change' too frequently
+    (when (> (- (float-time (current-time))
+                lsp-on-touch-time) 5) ;; 5 seconds
+      (setq lsp-on-touch-time (float-time (current-time)))
+      ad-do-it))
+  )
 
 (my-use-package envrc
   :ensure t
