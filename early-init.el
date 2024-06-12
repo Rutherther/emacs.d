@@ -73,3 +73,6 @@
 (blink-cursor-mode -1)
 (setq ring-bell-function #'ignore)
 
+;; Early init this
+(setq custom-file (locate-user-emacs-file "custom.el"))
+(load custom-file 'noerror 'nomessage)
