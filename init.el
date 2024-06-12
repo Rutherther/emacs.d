@@ -396,19 +396,26 @@
 
 (my-use-package savehist
   :init
+  (save-place-mode 1)
   (savehist-mode 1))
 
 (my-use-package emacs
   :hook
   (minibuffer-setup . cursor-intangible-mode)
   :general
-  (my-leader "n" '(:keymap narrow-map :wk "Narrowing"))
+  (my-leader
+    "n" '(:keymap narrow-map :wk "Narrowing")
+    "f R" '(revert-buffer :wk "Revert"))
   :bind
   (("C-x C-b" . ibuffer))
   :custom
   (enable-recursive-minibuffers t)
   (read-extended-command-predicate #'command-completion-default-include-p)
+  (use-dialog-box nil)
+  (global-auto-revert-non-file-buffers t)
   :init
+  (global-auto-revert-mode 1)
+
   (put 'narrow-to-region 'disabled nil)
   (setq minibuffer-prompt-properties
         '(read-only t cursor-intangible t face minibuffer-prompt)))
