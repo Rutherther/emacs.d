@@ -640,6 +640,8 @@
   :init
   (add-hook 'completion-at-point-functions #'cape-dabbrev)
   (add-hook 'completion-at-point-functions #'cape-file)
+  (add-hook 'completion-at-point-functions #'cape-keyword)
+  :config
   (defun kb/cape-capf-setup-git-commit ()
     (let ((result))
       (dolist (element '(cape-symbol cape-dabbrev) result)
