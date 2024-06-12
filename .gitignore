@@ -1,3 +1,15 @@
-init.el~
-early-init.el~
-stateful
+# Custom setup per machine
+custom-setup.el
+
+# State. Thanks to no-littering
+# all should be here
+stateful/
+
+# Compiled
+*.elc
+*.eln
+
+
+# TODO: this should not be here, but in stateful.
+# Why does emacs create this for package-install?
+elpa/
