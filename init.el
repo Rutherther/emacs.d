@@ -18,6 +18,7 @@
    gcs-done))
 
 (add-hook 'emacs-startup-hook #'efs/display-startup-time)
+
 (my-use-package no-littering
   :ensure (:wait t)
   :demand t
@@ -773,12 +774,14 @@
 ;; VHDL
 (my-use-package vhdl-mode
   :ensure nil
-  :mode
-  ("\\.vhd\\'" . vhdl-mode)
+  ;; :mode
+  ;; vhdl-ts-mode instead
+  ;; ("\\.vhdl?\\'" . vhdl-mode)
   :hook
   ((vhdl-mode . lsp-deferred) ;; defer because of envrc
    (vhdl-mode . vhdl-electric-mode)
-   (vhdl-mode . vhdl-stutter-mode))
+   (vhdl-mode . vhdl-stutter-mode)
+   (vhdl-mode . (lambda () (setq lsp-completion-enable nil))))
   :custom
   (vhdl-clock-edge-condition 'function)
   (vhdl-clock-name "clk_i")
@@ -786,6 +789,19 @@
   (vhdl-reset-name "rst_in")
   (vhdl-basic-offset 2)
   (lsp-vhdl-server 'vhdl-ls))
+
+(my-use-package vhdl-ts-mode
+  :ensure t
+  :after vhdl-mode
+  :mode
+  ("\\.vhdl?\\'" . vhdl-ts-mode))
+
+(my-use-package hydra
+  :ensure t)
+
+(my-use-package vhdl-ext
+  :ensure t
+  :after vhdl-mode)
 
 ;; Verilog
 
