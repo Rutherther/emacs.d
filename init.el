@@ -737,17 +737,11 @@
   :commands pdf-view-mode
   )
 
-;; Lisp
-;; (my-use-package elisp-mode
-;;   :custom
-;;   (lisp-indent-offset 2))
-
-;; (defun my-use-package-indent (indent-point state)
-;;   "Indent always by two"
-;;   (goto-char (elt state 1))
-;;   (+ 2 (current-column)))
-
-;; (put 'my-use-package 'lisp-indent-function 'my-use-package-indent)
+;; Treesit langs
+(my-use-package emacs
+  :ensure nil
+  :custom
+  (treesit-font-lock-level 4))
 
 ;; Nix
 (my-use-package nix-mode
@@ -762,6 +756,11 @@
   )
 
 ;; Rust
+(my-use-package rust-mode
+  :ensure t
+  :custom
+  (rust-mode-treesitter-derive t))
+
 (my-use-package rustic
   :ensure t
   :init
