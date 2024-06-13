@@ -652,6 +652,9 @@
   (add-hook 'completion-at-point-functions #'cape-dabbrev)
   (add-hook 'completion-at-point-functions #'cape-file)
   (add-hook 'completion-at-point-functions #'cape-keyword)
+  :custom
+  (cape-dabbrev-min-length 2)
+  (cape-dabbrev-check-other-buffers #'cape--buffers-major-mode)
   :config
   (defun kb/cape-capf-setup-git-commit ()
     (let ((result))
