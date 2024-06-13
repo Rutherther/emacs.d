@@ -777,7 +777,7 @@
 (my-use-package vhdl-mode
   :ensure nil
   ;; :mode
-  ;; vhdl-ts-mode instead
+  ;; Use vhdl-ts-mode instead
   ;; ("\\.vhdl?\\'" . vhdl-mode)
   :hook
   ((vhdl-mode . lsp-deferred) ;; defer because of envrc
@@ -795,6 +795,8 @@
 (my-use-package vhdl-ts-mode
   :ensure t
   :after vhdl-mode
+  :custom
+  (vhdl-ts-indent-level tab-width)
   :mode
   ("\\.vhdl?\\'" . vhdl-ts-mode))
 
