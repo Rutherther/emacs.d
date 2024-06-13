@@ -140,14 +140,15 @@
     ("d" . evil-window-delete)
     ("o" . ace-window))
   :custom
-  (evil-want-Y-yank-to-eol t)
   (evil-undo-system 'undo-redo)
   (evil-want-integration t)
   (evil-want-keybinding nil)
   :config
-	(my-unbind-key-in-evil-states "C-.")
+  ; evil-want-Y-yank-to-eol cannot be set by custom. Use this instead
+  (setq evil-want-Y-yank-to-eol t)
 
-  (evil-mode))
+	(my-unbind-key-in-evil-states "C-.")
+  (evil-mode 1))
 
 (my-use-package evil-collection
   :after evil
