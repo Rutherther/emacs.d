@@ -3,6 +3,8 @@
 ;;      Latex + templates
 ;; pdf tools
 
+(require 'custom-setup nil t)
+
 (add-to-list 'load-path (locate-user-emacs-file "lisp/"))
 (require 'functions)
 (require 'elpaca-loader)
