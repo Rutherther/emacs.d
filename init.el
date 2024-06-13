@@ -146,10 +146,10 @@
   (evil-undo-system 'undo-redo)
   (evil-want-integration t)
   (evil-want-keybinding nil)
-  :config
+  :init
   ; evil-want-Y-yank-to-eol cannot be set by custom. Use this instead
   (setq evil-want-Y-yank-to-eol t)
-
+  :config
 	(my-unbind-key-in-evil-states "C-.")
   (evil-mode 1))
 
@@ -388,6 +388,7 @@
   ;; Configure a custom style dispatcher (see the Consult wiki)
   ;; (setq orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch))
   ;;       orderless-component-separator #'orderless-escapable-split-on-space)
+  (orderless-matching-styles '(orderless-literal orderless-regexp orderless-flex))
   (completion-styles '(orderless basic))
   (completion-category-defaults nil)
   (completion-category-overrides '((file (styles partial-completion))))
@@ -695,6 +696,8 @@
 
   (lsp-enable-snippet nil)
 
+  (lsp-completion-provider :none)
+
   ;; Handled by envrc
   (lsp-enable-suggest-server-download nil)
 
@@ -705,8 +708,17 @@
   (lsp-enable-symbol-highlighting nil)
   (lsp-enable-links nil)
   (lsp-restart 'auto-restart)
-  :hook
+  (lsp-enable-folding nil)
+  (lsp-enable-text-document-color nil)
+  (lsp-enable-on-type-formatting nil)
+  (lsp-headerline-breadcrumb-enable nil)
+  :hook (
   (lsp-mode . lsp-enable-which-key-integration)
+  ;; Fix orderless in lsp-mode https://magnus.therning.org/2024-05-04-orderless-completion-in-lsp-mode.html
+   (lsp-completion-mode . (lambda ()
+                            (setq-local completion-category-defaults
+                                        (assoc-delete-all 'lsp-capf completion-category-defaults))))
+  )
   :config
   ;; don't ping LSP lanaguage server too frequently
   (defvar lsp-on-touch-time 0)
@@ -790,7 +802,8 @@
   (vhdl-reset-kind 'sync)
   (vhdl-reset-name "rst_in")
   (vhdl-basic-offset 2)
-  (lsp-vhdl-server 'vhdl-ls))
+  (lsp-vhdl-server 'vhdl-ls)
+)
 
 (my-use-package vhdl-ts-mode
   :ensure t
