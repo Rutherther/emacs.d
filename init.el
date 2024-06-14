@@ -521,7 +521,9 @@
 
 ;; Git
 (my-use-package transient
-  :ensure t)
+  :ensure t
+  :custom
+  (transient-levels-file (locate-user-emacs-file "transient-levels.el")))
 (my-use-package magit
   :ensure t
   :hook
