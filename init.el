@@ -606,6 +606,15 @@
   :config
   (global-flycheck-mode 1))
 
+;; TODO: what about isearch-lazy-count variable?
+;; Added in emacs 27, could be an alternative.
+(my-use-package evil-anzu
+  :ensure t
+  :demand t
+  :after evil
+  :config
+  (global-anzu-mode +1))
+
 ;; Vterm
 (use-package vterm
   :ensure t
