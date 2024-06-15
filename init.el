@@ -1,7 +1,25 @@
+;; Lang configs
 ;;      C, C++
 ;;      VHDL, Verilog
 ;;      Latex + templates
-;; pdf tools
+;;      Matlab
+;;      org
+;; Multiple cursors (evil-mc?)
+;; super-save?
+;; https://github.com/svaante/dape
+
+;; eglot?
+
+;; dired compatability of a/b and tab
+;; formatting etc for vhdl-ts - local leader
+
+;; debug vhdl lsp, what is the issue
+;;  how to speed it up?
+
+;; vhdl-ts
+;;  wrong indentation for new line, but it gets fixed afterwards? figure out
+
+;; flycheck errors jumping
 
 (require 'custom-setup nil t)
 
@@ -26,13 +44,8 @@
   :demand t
   :init
   (setq no-littering-etc-directory (expand-file-name "stateful/config" user-emacs-directory))
-  (setq no-littering-var-directory (expand-file-name "stateful/data" user-emacs-directory))
-  :config
-  ;; (setq savehist-file (expand-file-name "savehist.el" no-littering-var-directory))
-  ;; (setq recentf-save-file (expand-file-name "recentf-save.el" no-littering-var-directory))
-  ;; (setq transient-history-file))
-  )
-(elpaca-wait)
+  (setq no-littering-var-directory (expand-file-name "stateful/data" user-emacs-directory)))
+(elpaca-wait) ; No littering
 
 ;; some visual configs
 (my-use-package gruvbox-theme
@@ -60,6 +73,12 @@
 
 (setq-default resize-mini-windows t)
 
+(my-use-package beacon
+  :ensure t
+  :config
+  (beacon-mode 1))
+
+;; Editing
 (my-use-package whitespace
   :hook
   ((before-save . whitespace-cleanup)
@@ -698,18 +717,8 @@
 ;; Programming
 (my-use-package eglot
   :ensure nil
-  :commands (eglot eglot-on eglot-deferred)
-  :config
-  (defun eglot-on ()
-    (interactive)
-    (unless (eglot-managed-p)
-      (call-interactively 'eglot)))
-  ;; TODO: use something more robust like lsp-deferred.
-  ;; on the other hand this suffices just fine for envrc
-  ;; integration.
-  (defun eglot-deferred ()
-    (run-with-idle-timer 1 nil (lambda ()
-                                (eglot-on))))
+  :commands (eglot eglot-ensure)
+  :after projectile
   )
 
 (my-use-package envrc
@@ -760,14 +769,16 @@
 (my-use-package rust-mode
   :ensure t
   :hook
-  ((rust-mode . eglot-deferred))
+  (((rust-mode rust-ts-mode) . eglot-ensure))
   :custom
   (rust-mode-treesitter-derive t))
 
 (my-use-package rustic
   :ensure t
-  :init
-  (add-to-list 'auto-mode-alist '("\\.rs\\'" . rustic-mode)))
+  :mode
+  ("\\.rs\\'" . rustic-mode)
+  :hook
+  ((rustic-mode . eglot-ensure)))
 
 ;; VHDL
 (my-use-package vhdl-mode
@@ -778,7 +789,7 @@
   ;; Use vhdl-ts-mode instead
   ;; ("\\.vhdl?\\'" . vhdl-mode)
   :hook
-  ((vhdl-mode . eglot-deferred)
+  ((vhdl-mode . eglot-ensure)
    (vhdl-mode . vhdl-electric-mode)
    (vhdl-mode . vhdl-stutter-mode))
   :custom
