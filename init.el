@@ -696,49 +696,16 @@
             "r" 'cape-rfc1345))
 
 ;; Programming
-(my-use-package lsp-mode
-  :ensure t
-  :commands lsp
-  :general
-  (my-leader
-    "l" '(:keymap lsp-command-map :wk "LSP"))
-  :custom
-  (lsp-keymap-prefix "C-c l")
-
-  (lsp-enable-snippet nil)
-
-  (lsp-completion-provider :none)
-
-  ;; Handled by envrc
-  (lsp-enable-suggest-server-download nil)
-
-  ;; Speed-up
-  (lsp-log-io nil)
-  ;; (lsp-diagnostic-package :none)
-  (lsp-enable-snippet nil)
-  (lsp-enable-symbol-highlighting nil)
-  (lsp-enable-links nil)
-  (lsp-restart 'auto-restart)
-  (lsp-enable-folding nil)
-  (lsp-enable-text-document-color nil)
-  (lsp-enable-on-type-formatting nil)
-  (lsp-headerline-breadcrumb-enable nil)
-  :hook (
-  (lsp-mode . lsp-enable-which-key-integration)
-  ;; Fix orderless in lsp-mode https://magnus.therning.org/2024-05-04-orderless-completion-in-lsp-mode.html
-   (lsp-completion-mode . (lambda ()
-                            (setq-local completion-category-defaults
-                                        (assoc-delete-all 'lsp-capf completion-category-defaults))))
-  )
+(my-use-package eglot
+  :ensure nil
+  :commands (eglot eglot-deferred)
   :config
-  ;; don't ping LSP lanaguage server too frequently
-  (defvar lsp-on-touch-time 0)
-  (defadvice lsp-on-change (around lsp-on-change-hack activate)
-    ;; don't run `lsp-on-change' too frequently
-    (when (> (- (float-time (current-time))
-                lsp-on-touch-time) 5) ;; 5 seconds
-      (setq lsp-on-touch-time (float-time (current-time)))
-      ad-do-it))
+  ;; TODO: use something more robust like lsp-deferred.
+  ;; on the other hand this suffices just fine for envrc
+  ;; integration.
+  (defun eglot-deferred ()
+    (run-with-idle-timer 1 nil (lambda ()
+                                (unless (eglot-managed-p) (call-interactively 'eglot)))))
   )
 
 (my-use-package envrc
@@ -799,21 +766,27 @@
 ;; VHDL
 (my-use-package vhdl-mode
   :ensure nil
+  :demand t
+  :after (eglot flycheck)
   ;; :mode
   ;; Use vhdl-ts-mode instead
   ;; ("\\.vhdl?\\'" . vhdl-mode)
   :hook
-  ((vhdl-mode . lsp-deferred) ;; defer because of envrc
+  ((vhdl-mode . eglot-deferred)
    (vhdl-mode . vhdl-electric-mode)
-   (vhdl-mode . vhdl-stutter-mode)
-   (vhdl-mode . (lambda () (setq lsp-completion-enable nil))))
+   (vhdl-mode . vhdl-stutter-mode))
   :custom
   (vhdl-clock-edge-condition 'function)
   (vhdl-clock-name "clk_i")
   (vhdl-reset-kind 'sync)
   (vhdl-reset-name "rst_in")
   (vhdl-basic-offset 2)
-  (lsp-vhdl-server 'vhdl-ls)
+  :config
+  (add-to-list 'eglot-server-programs
+                '(vhdl-mode . ("vhdl_ls")))
+
+  ;; TODO: just append
+  (setq-default flycheck-disabled-checkers '(vhdl-ghdl))
 )
 
 (my-use-package vhdl-ts-mode
