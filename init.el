@@ -698,14 +698,18 @@
 ;; Programming
 (my-use-package eglot
   :ensure nil
-  :commands (eglot eglot-deferred)
+  :commands (eglot eglot-on eglot-deferred)
   :config
+  (defun eglot-on ()
+    (interactive)
+    (unless (eglot-managed-p)
+      (call-interactively 'eglot)))
   ;; TODO: use something more robust like lsp-deferred.
   ;; on the other hand this suffices just fine for envrc
   ;; integration.
   (defun eglot-deferred ()
     (run-with-idle-timer 1 nil (lambda ()
-                                (unless (eglot-managed-p) (call-interactively 'eglot)))))
+                                (eglot-on))))
   )
 
 (my-use-package envrc
@@ -755,6 +759,8 @@
 ;; Rust
 (my-use-package rust-mode
   :ensure t
+  :hook
+  ((rust-mode . eglot-deferred))
   :custom
   (rust-mode-treesitter-derive t))
 
