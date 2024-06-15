@@ -414,6 +414,9 @@
   (completion-category-overrides '((file (styles partial-completion))))
 )
 
+(my-use-package wgrep
+  :ensure t)
+
 ;;; NAVIGATION
 ; TODO: consider removing this. I don't use it
 (my-use-package ace-window
