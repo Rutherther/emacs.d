@@ -74,8 +74,6 @@
               hscroll-step 1
               hscroll-margin 3)
 
-(defalias 'yes-or-no-p 'y-or-n-p)
-
 (setq-default resize-mini-windows t)
 
 ;; Editing
@@ -470,6 +468,7 @@
   :bind
   (("C-x C-b" . ibuffer))
   :custom
+  (use-short-answers t)
   (enable-recursive-minibuffers t)
   (read-extended-command-predicate #'command-completion-default-include-p)
   (use-dialog-box nil)
@@ -559,6 +558,9 @@
 (my-use-package dired-narrow
   :ensure t)
 
+;; There is a bug for dired-collapse + dired-subtree.
+;; When expanding the last folder in a tree, it cannot
+;; be reliably expanded / collapsed...
 (my-use-package dired-collapse
   :ensure t
   :hook
