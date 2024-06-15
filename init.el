@@ -55,6 +55,11 @@
    (load-theme 'gruvbox-dark-hard t)
 )
 
+(my-use-package solaire-mode
+  :ensure t
+  :config
+  (solaire-global-mode 1))
+
 (setq-default inhibit-startup-screen t)
 (setq inhibit-splash-screen t)
 (setq inhibit-startup-message t)
@@ -72,11 +77,6 @@
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 (setq-default resize-mini-windows t)
-
-(my-use-package beacon
-  :ensure t
-  :config
-  (beacon-mode 1))
 
 ;; Editing
 (my-use-package whitespace
@@ -414,6 +414,7 @@
 )
 
 ;;; NAVIGATION
+; TODO: consider removing this. I don't use it
 (my-use-package ace-window
   :ensure t
   :general
@@ -427,6 +428,32 @@
   (aw-leading-char-style 'char)
   (aw-scope 'frame)
   :bind (("M-o" . ace-window)))
+
+(my-use-package golden-ratio
+  :ensure t
+  :custom
+  (golden-ratio-extra-commands '(
+    evil-window-left
+    evil-window-right
+    evil-window-up
+    evil-window-down
+    buf-move-left
+    buf-move-right
+    buf-move-up
+    buf-move-down
+    window-number-select
+    select-window
+    select-window-1
+    select-window-2
+    select-window-3
+    select-window-4
+    select-window-5
+    select-window-6
+    select-window-7
+    select-window-8
+    select-window-9))
+  :config
+  (golden-ratio-mode 1))
 
 (my-use-package savehist
   :init
@@ -446,13 +473,16 @@
   (enable-recursive-minibuffers t)
   (read-extended-command-predicate #'command-completion-default-include-p)
   (use-dialog-box nil)
-  (global-auto-revert-non-file-buffers t)
   :init
-  (global-auto-revert-mode 1)
-
   (put 'narrow-to-region 'disabled nil)
   (setq minibuffer-prompt-properties
         '(read-only t cursor-intangible t face minibuffer-prompt)))
+
+(my-use-package autorevert
+  :ensure nil
+  :custom
+  (global-auto-revert-non-file-buffers t)
+  (global-auto-revert-mode t))
 
 ;; Help
 (my-use-package helpful
@@ -635,8 +665,9 @@
   (global-anzu-mode +1))
 
 ;; Vterm
-(use-package vterm
+(my-use-package vterm
   :ensure t
+  :commands vterm
   :config
   (add-to-list 'vterm-eval-cmds '("update-pwd" (lambda (path) (setq default-directory path))))
 
@@ -647,6 +678,17 @@
                   (select-window window)
                 (message "Failed to open file: %s" path))))
       vterm-eval-cmds))
+
+(my-use-package vterm-toggle
+  :ensure t
+  :commands vterm-toggle
+  :custom
+  (vterm-toggle-scope 'project)
+  (vterm-toggle-project-root t)
+  :general
+  (my-leader
+    "o t" '(vterm-toggle :wk "Toggle terminal")
+    "o T" '(vterm :wk "Open terminal")))
 
 ;; MMM mode
 ;; (my-use-package mmm-mode
@@ -729,6 +771,14 @@
     "e" '(:keymap envrc-command-map :wk "Direnv"))
   :config
   (envrc-global-mode 1))
+
+(my-use-package fancy-compilation
+  :ensure t
+  :defer 3
+  :custom
+  (fancy-compilation-scroll-output 'first-error)
+  :config
+  (fancy-compilation-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Languages
