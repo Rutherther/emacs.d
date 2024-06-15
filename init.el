@@ -430,6 +430,7 @@
 (my-use-package golden-ratio
   :ensure t
   :custom
+  ;; Work with evil
   (golden-ratio-extra-commands '(
     evil-window-left
     evil-window-right
@@ -450,8 +451,13 @@
     select-window-7
     select-window-8
     select-window-9))
+
+  ;; Work with which-key
+  (golden-ratio-inhibit-functions '((lambda () (and which-key--buffer
+                                                  (window-live-p (get-buffer-window which-key--buffer))))))
   :config
-  (golden-ratio-mode 1))
+  (golden-ratio-mode 1)
+  )
 
 (my-use-package savehist
   :init
