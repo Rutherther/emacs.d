@@ -512,19 +512,27 @@
     ([remap describe-symbol] . helpful-symbol)))
 
 ;; Projects
-(my-use-package projectile
-  :ensure t
-  :commands projectile-project-root
+(my-use-package project
+  :ensure nil
   :custom
-  (projectile-switch-project-action 'projectile-dired)
-  (projectile-completion-system 'default)
-  (projectile-current-project-on-switch 'keep)
+  (vc-handled-backends '(Git))
+  (project-switch-commands '(
+                             (consult-project-buffer "Find buffer" "b")
+                             (project-find-file "Find file" "f")
+                             (consult-ripgrep-all "Search" "s")
+                             (project-dired "Dired" "d")
+                             ;; (vterm-toggle "Vterm" "v") ;; TODO: make sure it opens inside of the project!
+                             (my/magit-current-window "Magit" "m")))
   :general
-  (my-leader "p" '(:keymap projectile-command-map :wk "projectile"))
-  :bind (:map projectile-mode-map
-	  ("C-c p" . projectile-command-map))
-  :config
-  (projectile-mode 1))
+  (my-leader
+    "p" '(:keymap project-prefix-map :wk "Project"))
+  :init
+  (defun my/magit-current-window ()
+    "Open Magit status in current window"
+    (interactive)
+    (same-window-prefix)
+    (magit-status (project-root (project-current t))))
+  )
 
 ;; Modeline
 (my-use-package vs-modeline
