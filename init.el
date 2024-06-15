@@ -156,6 +156,9 @@
   :general
   (my-leader
     "u" '(universal-argument :wk "Universal argument"))
+  :hook
+  ((after-change-major-mode . (lambda ()
+                                (setq-local evil-shift-width tab-width))))
   :bind
   (:map evil-window-map
     ("d" . evil-window-delete)
@@ -516,7 +519,6 @@
   (projectile-switch-project-action 'projectile-dired)
   (projectile-completion-system 'default)
   (projectile-current-project-on-switch 'keep)
-  (evil-shift-width tab-width)
   :general
   (my-leader "p" '(:keymap projectile-command-map :wk "projectile"))
   :bind (:map projectile-mode-map
