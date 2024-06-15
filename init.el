@@ -130,6 +130,7 @@
 (my-use-package general
   :ensure (:wait t) ; Adds general use-package keyword
   :config
+  (general-auto-unbind-keys)
   (general-create-definer my-leader
     :states '(motion normal)
     :keymaps 'override
@@ -558,7 +559,15 @@
 
 (my-use-package dired-ranger
   :ensure t
-;; TODO: config of move, copy etc.
+  :general
+  (my-local-leader dired-mode-map
+    :override t
+    "y" '(dired-ranger-copy :wk "Ranger copy")
+    "c" '(dired-ranger-copy :wk "Ranger copy")
+    "m" '(dired-ranger-move :wk "Ranger move")
+    "p" '(dired-ranger-paste :wk "Ranger paste")
+    "b" '(dired-ranger-bookmark :wk "Ranger bookmark")
+    "RET" '(dired-ranger-bookmark-visit :wk "Ranger bookmark visit"))
 )
 
 (my-use-package dired-narrow
@@ -867,6 +876,11 @@
 (my-use-package vhdl-ts-mode
   :ensure t
   :after vhdl-mode
+  :general
+  (my-local-leader vhdl-ts-mode-map
+    "f" '(nil :wk "Formatting")
+    "f f" '(vhdl-ts-beautify-block-at-point :wk "Beautify block at point")
+    "f b" '(vhdl-ts-beautify-buffer :wk "Beautify buffer"))
   :custom
   (vhdl-ts-indent-level tab-width)
   :mode
