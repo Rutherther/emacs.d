@@ -298,7 +298,9 @@
 (my-use-package embark-consult
   :ensure t
   :bind (:map search-map
-          ("s" . consult-ripgrep-all))
+              ("s" . consult-ripgrep-all)
+              ("i" . consult-imenu)
+              ("I" . consult-imenu-multi))
   :hook
   ((embark-collect-mode . consult-preview-at-point-mode))
   :init
@@ -777,8 +779,11 @@
 (my-use-package eglot
   :ensure nil
   :commands (eglot eglot-ensure)
-  :after projectile
-  )
+  :general
+  (normal eglot--managed-mode
+   :definer 'minor-mode
+   "gR" '(eglot-rename :wk "Rename identifier")
+   "g." '(eglot-code-actions :wk "Code actions")))
 
 (my-use-package envrc
   :ensure t
