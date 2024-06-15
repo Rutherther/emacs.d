@@ -1,5 +1,6 @@
 # Custom setup per machine
 custom-setup.el
+custom.el
 
 # State. Thanks to no-littering
 # all should be here
