@@ -852,6 +852,22 @@
   :hook
   ((rustic-mode . eglot-ensure)))
 
+;; CSharp
+
+(my-use-package csharp-mode
+  :ensure nil
+  :after eglot
+  :hook
+  ((csharp-mode . eglot-ensure)))
+
+(my-use-package csharp-ts-mode
+  :ensure nil
+  :custom
+  (csharp-ts-mode-indent-level tab-width)
+  :hook
+  ((csharp-ts-mode . eglot-ensure))
+  :mode "\\.cs\\'")
+
 ;; VHDL
 (my-use-package vhdl-mode
   :ensure nil
