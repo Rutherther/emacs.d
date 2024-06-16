@@ -329,6 +329,8 @@
     "d m" '(consult-man :wk "Consult uan")
     "d i" '(consult-info :wk "Consult info")
 
+    "j c" '(consult-flymake :wk "Consult flymake")
+
     "y" '(consult-yank-pop :wk "Yank pop")
 
     ;; "g" '(nil :wk "Goto")
@@ -682,11 +684,22 @@
   )
 
 ;; Editing
-(use-package flycheck
+(my-use-package flymake
   :ensure t
-  :config
-  (global-flycheck-mode 1))
+  :general
+  (my-leader
+    "j n" '(flymake-goto-next-error :wk "Next error")
+    "j p" '(flymake-goto-prev-error :wk "Prev error")
+    "j j" '(flymake-goto-next-error :wk "Next error")
+    "j k" '(flymake-goto-prev-error :wk "Prev error")
 
+    "j R" '(flymake-running-backends :wk "Running backends")
+    "j d" '(flymake-disabled-backends :wk "Disabled backends")
+    "j r" '(flymake-reporting-backends :wk "Reported backends")
+
+    "j l" '(flymake-show-buffer-diagnostics :wk "Show buffer diagnostics")
+    "j L" '(flymake-show-project-diagnostics :wk "Show project diagnostics")
+    ))
 ;; TODO: what about isearch-lazy-count variable?
 ;; Added in emacs 27, could be an alternative.
 (my-use-package evil-anzu
@@ -885,7 +898,7 @@
 (my-use-package vhdl-mode
   :ensure nil
   :demand t
-  :after (eglot flycheck)
+  :after eglot
   ;; :mode
   ;; Use vhdl-ts-mode instead
   ;; ("\\.vhdl?\\'" . vhdl-mode)
