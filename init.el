@@ -441,6 +441,7 @@
 (my-use-package golden-ratio
   :ensure t
   :custom
+  (golden-ratio-exclude-buffer-regexp '("dape"))
   ;; Work with evil
   (golden-ratio-extra-commands '(
     evil-window-left
@@ -832,6 +833,11 @@
   (fancy-compilation-scroll-output 'first-error)
   :config
   (fancy-compilation-mode))
+
+(my-use-package dape
+  :ensure t
+  :custom
+  (dape-buffer-window-arrangement 'right))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Languages
