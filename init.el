@@ -802,8 +802,13 @@
             "r" 'cape-rfc1345))
 
 ;; Programming
+(my-use-package jsonrpc
+  :ensure t)
+(my-use-package eldoc
+  :ensure t)
+
 (my-use-package eglot
-  :ensure nil
+  :ensure t
   :commands (eglot eglot-ensure)
   :general
   (normal eglot--managed-mode
