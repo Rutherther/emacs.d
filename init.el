@@ -926,9 +926,6 @@
   :config
   (add-to-list 'eglot-server-programs
                 '(vhdl-mode . ("vhdl_ls")))
-
-  ;; TODO: just append
-  (setq-default flycheck-disabled-checkers '(vhdl-ghdl))
 )
 
 (my-use-package vhdl-ts-mode
