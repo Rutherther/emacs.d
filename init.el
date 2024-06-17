@@ -442,6 +442,7 @@
   :ensure t
   :custom
   (golden-ratio-exclude-buffer-regexp '("dape"))
+  (golden-ratio-exclude-modes '("ediff-mode"))
   ;; Work with evil
   (golden-ratio-extra-commands '(
     evil-window-left
@@ -465,8 +466,23 @@
     select-window-9))
 
   ;; Work with which-key
-  (golden-ratio-inhibit-functions '((lambda () (and which-key--buffer
-                                                  (window-live-p (get-buffer-window which-key--buffer))))))
+  (golden-ratio-inhibit-functions '(
+                                    (lambda () (and which-key--buffer
+                                                    (window-live-p (get-buffer-window which-key--buffer))))
+                                    pl/ediff-comparison-buffer-p
+                                    ))
+  :hook
+  (ediff-startup . my-ediff-startup-hook)
+  :init
+  (defun my-ediff-startup-hook ()
+    "Workaround to balance the ediff windows when golden-ratio is enabled."
+    ;; There's probably a better way to do it.
+    (ediff-toggle-split)
+    (ediff-toggle-split))
+
+  (defun pl/ediff-comparison-buffer-p ()
+  (and (boundp 'ediff-this-buffer-ediff-sessions)
+       ediff-this-buffer-ediff-sessions))
   :config
   (golden-ratio-mode 1)
   )
