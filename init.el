@@ -268,6 +268,7 @@
 
 (use-package embark
   :ensure t
+  :after ace-window
   :general
   (my-leader
     "." '(embark-act :wk "Act")
@@ -290,6 +291,10 @@
   ;; (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
 
   :config
+  ; TODO: use general.el :general block
+  (define-key embark-file-map     (kbd "o") (my/embark-ace-action find-file))
+  (define-key embark-buffer-map   (kbd "o") (my/embark-ace-action switch-to-buffer))
+  (define-key embark-bookmark-map (kbd "o") (my/embark-ace-action bookmark-jump))
 
   ;; Hide the mode line of the Embark live/completions buffers
   (add-to-list 'display-buffer-alist
@@ -436,7 +441,17 @@
   (aw-char-position 'left)
   (aw-leading-char-style 'char)
   (aw-scope 'frame)
-  :bind (("M-o" . ace-window)))
+  :bind (("M-o" . ace-window))
+  :init
+  (eval-when-compile
+    (defmacro my/embark-ace-action (fn)
+      `(defun ,(intern (concat "my/embark-ace-" (symbol-name fn))) ()
+        (interactive)
+        (with-demoted-errors "%s"
+        (require 'ace-window)
+        (let ((aw-dispatch-always t))
+          (aw-switch-to-window (aw-select nil))
+          (call-interactively (symbol-function ',fn))))))))
 
 (my-use-package golden-ratio
   :ensure t
@@ -869,8 +884,7 @@
   (doc-view-mode . (lambda () (display-line-numbers-mode -1)))
   (pdf-view-mode . (lambda () (display-line-numbers-mode -1)))
   :mode ("\\.pdf\\'" . pdf-view-mode)
-  :commands pdf-view-mode
-  )
+  :commands pdf-view-mode)
 
 ;; Treesit langs
 (my-use-package emacs
