@@ -268,7 +268,6 @@
 
 (use-package embark
   :ensure t
-  :after ace-window
   :general
   (my-leader
     "." '(embark-act :wk "Act")
@@ -305,6 +304,7 @@
 ;; Consult users will also want the embark-consult package.
 (my-use-package embark-consult
   :ensure t
+  :after (embark consult)
   :bind (:map search-map
               ("s" . consult-ripgrep-all)
               ("i" . consult-imenu)
@@ -455,6 +455,7 @@
 
 (my-use-package golden-ratio
   :ensure t
+  :demand t
   :custom
   (golden-ratio-exclude-buffer-regexp '("dape"))
   (golden-ratio-exclude-modes '("ediff-mode"))
