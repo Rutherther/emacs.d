@@ -101,7 +101,7 @@
   :demand t
   :custom
   (exec-path-from-shell-shell-name (getenv "SHELL"))
-  (exec-path-from-shell-arguments nil)
+  ; (exec-path-from-shell-arguments "-l -i") ; Set by default for bash, zsh etc.
   (exec-path-from-shell-variables
    '("PATH"
      "MANPATH"
@@ -959,6 +959,9 @@
                 '(vhdl-mode . ("vhdl_ls")))
 )
 
+;; TODO: indentation in vhdl works strangely when I add a new line.
+;; it's fixed by beautifying though, so it seems like the treesitter implementation
+;; of vhdl has someting sketchy in it
 (my-use-package vhdl-ts-mode
   :ensure t
   :after vhdl-mode
