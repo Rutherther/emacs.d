@@ -985,9 +985,9 @@
 (my-use-package hydra
   :ensure t)
 
-(my-use-package vhdl-ext
-  :ensure t
-  :after vhdl-mode)
+;; (my-use-package vhdl-ext
+;;   :ensure t
+;;   :after vhdl-mode)
 
 ;; Verilog
 
