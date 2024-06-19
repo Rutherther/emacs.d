@@ -304,15 +304,8 @@
 ;; Consult users will also want the embark-consult package.
 (my-use-package embark-consult
   :ensure t
-  :after (embark consult)
-  :bind (:map search-map
-              ("s" . consult-ripgrep-all)
-              ("i" . consult-imenu)
-              ("I" . consult-imenu-multi))
   :hook
-  ((embark-collect-mode . consult-preview-at-point-mode))
-  :init
-  (require 'consult-ripgrep-all))
+  ((embark-collect-mode . consult-preview-at-point-mode)))
 
 (my-use-package consult
   :ensure t
@@ -401,6 +394,10 @@
          :map minibuffer-local-map
          ("M-s" . consult-history)                 ;; orig. next-matching-history-element
          ("M-r" . consult-history))                ;; orig. previous-matching-history-element
+  (:map search-map
+              ("s" . consult-ripgrep-all)
+              ("i" . consult-imenu)
+              ("I" . consult-imenu-multi))
   :custom
   (register-preview-delay 0.5)
   (register-preview-function #'consult-register-format)
@@ -410,6 +407,7 @@
   :init
   (advice-add #'register-preview :override #'consult-register-window)
   :config
+  (require 'consult-ripgrep-all)
   (recentf-mode 1))
 
 (my-use-package orderless
