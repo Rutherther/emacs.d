@@ -21,9 +21,8 @@
 
 ;; flycheck errors jumping
 
-(require 'custom-setup nil t)
-
 (add-to-list 'load-path (locate-user-emacs-file "lisp/"))
+(require 'custom-setup nil t)
 (require 'functions)
 (require 'elpaca-loader)
 
