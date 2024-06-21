@@ -94,6 +94,32 @@
 (setq-default sentence-end-double-space nil)
 (setq-default truncate-lines t)
 
+(defcustom my/indent-variable-mode-alist '()
+  "Maps modes to their respective indent variable"
+  :type '(alist :key-type (symbol :tag "Mode")
+                :value-type (symbol :tag "Variable")))
+
+(defmacro my/indent-variable-mode-alist-add (mode variable)
+  `(add-to-list 'my/indent-variable-mode-alist '(,mode . ,variable)))
+
+(defun my/hook-indent-adjust-shift-widths ()
+  (when-let ((indent (symbol-value (cdr (assoc major-mode my/indent-variable-mode-alist)))))
+    (setq-local tab-width indent))
+  (setq-local evil-shift-width tab-width))
+
+;; This doesn't work. Why?
+;; it's not a good approach, but I don't understand it!
+;; (defmacro my/adjust-shift-widths (variable)
+;;   `(let
+;;       ((shift-width ,variable))
+;;     (setq-local evil-shift-width shift-width)
+;;     (setq-local tab-width shift-width)))
+
+;; (defmacro my/add-hook-adjust-shift-widths (mode variable)
+;;   `(add-hook
+;;     (intern (concat (symbol-name ',mode) "-hook"))
+;;     (lambda (&rest args) (my/adjust-shift-widths ,variable))))
+
 ;; ENV
 (my-use-package exec-path-from-shell
   :ensure t
@@ -156,9 +182,6 @@
   :general
   (my-leader
     "u" '(universal-argument :wk "Universal argument"))
-  :hook
-  ((after-change-major-mode . (lambda ()
-                                (setq-local evil-shift-width tab-width))))
   :bind
   (:map evil-window-map
     ("d" . evil-window-delete)
@@ -509,6 +532,7 @@
   )
 
 (my-use-package savehist
+  :ensure nil
   :init
   (save-place-mode 1)
   (savehist-mode 1))
@@ -516,6 +540,7 @@
 (my-use-package emacs
   :hook
   (minibuffer-setup . cursor-intangible-mode)
+  (after-change-major-mode . my/hook-indent-adjust-shift-widths)
   :general
   (my-leader
     "n" '(:keymap narrow-map :wk "Narrowing")
@@ -913,33 +938,25 @@
 ;; Rust
 (my-use-package rust-mode
   :ensure t
-  :hook
-  (((rust-mode rust-ts-mode) . eglot-ensure))
   :custom
-  (rust-mode-treesitter-derive t))
+  (rust-mode-treesitter-derive t)
+  :config
+  (my/indent-variable-mode-alist-add rust-ts-mode rust-ts-mode-indent-offset))
 
 (my-use-package rustic
   :ensure t
   :mode
-  ("\\.rs\\'" . rustic-mode)
-  :hook
-  ((rustic-mode . eglot-ensure)))
+  ("\\.rs\\'" . rustic-mode))
 
 ;; CSharp
 
 (my-use-package csharp-mode
   :ensure nil
   :after eglot
-  :hook
-  ((csharp-mode . eglot-ensure)))
-
-(my-use-package csharp-ts-mode
-  :ensure nil
-  :custom
-  (csharp-ts-mode-indent-level tab-width)
-  :hook
-  ((csharp-ts-mode . eglot-ensure))
-  :mode "\\.cs\\'")
+  :mode (("\\.cs\\'" . csharp-ts-mode))
+  :config
+  (my/indent-variable-mode-alist-add csharp-mode c-basic-offset)
+  (my/indent-variable-mode-alist-add csharp-ts-mode csharp-ts-mode-indent-offset))
 
 ;; VHDL
 (my-use-package vhdl-mode
@@ -950,8 +967,7 @@
   ;; Use vhdl-ts-mode instead
   ;; ("\\.vhdl?\\'" . vhdl-mode)
   :hook
-  ((vhdl-mode . eglot-ensure)
-   (vhdl-mode . vhdl-electric-mode)
+   ((vhdl-mode . vhdl-electric-mode)
    (vhdl-mode . vhdl-stutter-mode))
   :custom
   (vhdl-clock-edge-condition 'function)
@@ -962,6 +978,7 @@
   :config
   (add-to-list 'eglot-server-programs
                 '(vhdl-mode . ("vhdl_ls")))
+  (my/indent-variable-mode-alist-add vhdl-mode vhdl-basic-offset)
 )
 
 ;; TODO: indentation in vhdl works strangely when I add a new line.
@@ -978,7 +995,9 @@
   :custom
   (vhdl-ts-indent-level tab-width)
   :mode
-  ("\\.vhdl?\\'" . vhdl-ts-mode))
+  ("\\.vhdl?\\'" . vhdl-ts-mode)
+  :config
+  (my/indent-variable-mode-alist-add vhdl-ts-mode vhdl-ts-indent-level))
 
 (my-use-package hydra
   :ensure t)
