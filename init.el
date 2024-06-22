@@ -600,11 +600,13 @@
      (:eval (when buffer-read-only " RO"))))
     (vs-modeline-right
       '(
+        (:eval (when which-function-mode which-func-format))
+        (:eval (when which-function-mode " "))
         (:eval (vs-modeline-input-method))
-        " "
-        flymake-mode-line-exception
-        flymake-mode-line-counters
-        " "
+        (:eval (when flymake-mode " "))
+        (:eval (when flymake-mode flymake-mode-line-exception))
+        (:eval (when flymake-mode flymake-mode-line-counters))
+        (:eval (when flymake-mode " "))
         mode-name
         " "
         (:eval (vs-modeline-position-rel))
