@@ -1015,7 +1015,7 @@
 )
 
 (my-use-package vhdl-ts-mode
-  :ensure (:host github :repo "Rutherther/vhdl-ts-mode" :rev "9c8e14f53d3437d0d69f63f8833ebce39c1a39f6")
+  :ensure (:host github :repo "Rutherther/vhdl-ts-mode" :rev "a80b690e155975b61036e664f1f2ad592d74ab33")
   :after vhdl-mode
   :general
   (my-local-leader vhdl-ts-mode-map
@@ -1030,6 +1030,7 @@
   (my/indent-variable-mode-alist-add vhdl-ts-mode vhdl-ts-indent-level)
 
   (defun my/vhdl-ts-special-node-identifier-name (node)
+    "Return identifier name of NODE."
     (let (temp-node)
       (when node
         (cond ((string-match vhdl-ts-instance-re (treesit-node-type node))
@@ -1045,12 +1046,13 @@
     (let* ((special-identifier-name (my/vhdl-ts-special-node-identifier-name node))
           (concat-identifier-name
             (when special-identifier-name
-              (concat " - " special-identifier-name))))
+              (concat ": " special-identifier-name))))
       (concat
       (treesit-node-text (treesit-search-subtree node vhdl-ts-identifier-re))
       concat-identifier-name)))
 
-  (advice-add 'vhdl-ts--node-identifier-name :override #'my/vhdl-ts-node-identifier-name))
+  (advice-add 'vhdl-ts--node-identifier-name :override #'my/vhdl-ts-node-identifier-name)
+  )
 
 (my-use-package hydra
   :ensure t)
