@@ -985,6 +985,19 @@
   (my/indent-variable-mode-alist-add csharp-mode c-basic-offset)
   (my/indent-variable-mode-alist-add csharp-ts-mode csharp-ts-mode-indent-offset))
 
+;; Sh, Bash
+
+(my-use-package sh-script
+  :ensure nil
+  :custom
+  (sh-basic-offset 2))
+
+;; (my-use-package bash-ts-mode
+;;   :ensure nil
+;;   :mode "\\.sh\\'"
+;;   :custom
+;;   (bash-ts-mode-indent-offset 2))
+
 ;; VHDL
 (my-use-package vhdl-mode
   :ensure nil
