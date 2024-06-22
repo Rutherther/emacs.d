@@ -873,6 +873,8 @@
 (my-use-package eglot
   :ensure t
   :commands (eglot eglot-ensure)
+  :custom
+  (eglot-ignored-server-capabilities '(:documentHighlightProvider))
   :general
   (normal eglot--managed-mode
    :definer 'minor-mode
@@ -968,24 +970,28 @@
   ;; ("\\.vhdl?\\'" . vhdl-mode)
   :hook
    ((vhdl-mode . vhdl-electric-mode)
-   (vhdl-mode . vhdl-stutter-mode))
+    (vhdl-mode . vhdl-stutter-mode)
+    (vhdl-mode . my/disable-eglot-completion))
   :custom
   (vhdl-clock-edge-condition 'function)
   (vhdl-clock-name "clk_i")
   (vhdl-reset-kind 'sync)
   (vhdl-reset-name "rst_in")
   (vhdl-basic-offset 2)
+  :init
+  ;; VHDL lsp servers don't have good completion capabilities for now.
+  ;; Remove this when they are ready.
+  (defun my/disable-eglot-completion ()
+    (setq-local eglot-ignored-server-capabilities eglot-ignored-server-capabilities)
+    (add-to-list 'eglot-ignored-server-capabilities :completionProvider))
   :config
   (add-to-list 'eglot-server-programs
                 '(vhdl-mode . ("vhdl_ls")))
   (my/indent-variable-mode-alist-add vhdl-mode vhdl-basic-offset)
 )
 
-;; TODO: indentation in vhdl works strangely when I add a new line.
-;; it's fixed by beautifying though, so it seems like the treesitter implementation
-;; of vhdl has someting sketchy in it
 (my-use-package vhdl-ts-mode
-  :ensure t
+  :ensure (:host github :repo "Rutherther/vhdl-ts-mode" :rev "9c8e14f53d3437d0d69f63f8833ebce39c1a39f6")
   :after vhdl-mode
   :general
   (my-local-leader vhdl-ts-mode-map
