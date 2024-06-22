@@ -577,8 +577,11 @@
     ([remap describe-symbol] . helpful-symbol)))
 
 ;; Projects
+(my-use-package xref
+  :ensure t)
+
 (my-use-package project
-  :ensure nil
+  :ensure t
   :custom
   (vc-handled-backends '(Git))
   (project-switch-commands '(
