@@ -429,11 +429,11 @@
   :ensure t)
 
 ;;; NAVIGATION
-; TODO: consider removing this. I don't use it
 (my-use-package ace-window
   :ensure t
   :general
   (my-leader
+    "o" '(ace-window :wk "Ace window")
     "`" '(evil-switch-to-windows-last-buffer :wk "Switch to last buffer")
     "w" '(:keymap evil-window-map :wk "Windows")
   )
@@ -817,8 +817,8 @@
   (vterm-toggle-project-root t)
   :general
   (my-leader
-    "o t" '(vterm-toggle :wk "Toggle terminal")
-    "o T" '(vterm :wk "Open terminal")))
+    "t t" '(vterm-toggle :wk "Toggle terminal")
+    "t T" '(vterm :wk "Open terminal")))
 
 ;; MMM mode
 ;; (my-use-package mmm-mode
