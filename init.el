@@ -899,6 +899,7 @@
   :commands (eglot eglot-ensure)
   :custom
   (eglot-ignored-server-capabilities '(:documentHighlightProvider))
+  (eglot-stay-out-of '(imenu)) ; I prefer the ts imenu for now
   :general
   (normal eglot--managed-mode
    :definer 'minor-mode
