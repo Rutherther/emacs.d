@@ -628,11 +628,21 @@
         (:eval (vs-modeline-position)))))
   :config
 
+  ;; Why does project.el project-current slow down by a lot?
+  (defvar project-project-name nil)
+  (defun obtain-project-name ()
+    (let ((project-info (project-current)))
+      (setq-local project-project-name
+                  (or (unless project-info "")
+                      (file-name-nondirectory (directory-file-name (nth 2 project-info)))))))
+
+  (defun obtain-project-name-once ()
+    (if project-project-name
+        project-project-name
+      (obtain-project-name)))
+
   (vs-modeline-def-prop-segment project-el-name
-    (when-let*
-        ((project-info (project-current))
-         (project-path (nth 2 project-info))
-         (project-name (file-name-nondirectory (directory-file-name project-path))))
+    (when-let ((project-name (obtain-project-name-once)))
       (concat " " project-name))
     'vs-modeline-project)
 
