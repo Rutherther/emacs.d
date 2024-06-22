@@ -606,7 +606,36 @@
                          :repo "VojtechStep/vs-modeline.el")
 
   :demand t
+  :custom
+  ((vs-modeline-left
+   '("%e"
+     (:eval (vs-modeline-evil))
+     mode-line-process
+     (:eval (vs-modeline-project-el-name))
+     (:eval (vs-modeline-buffer-name))
+     (:eval (when (buffer-modified-p) "+"))
+     (:eval (when buffer-read-only " RO"))))
+    (vs-modeline-right
+      '(
+        (:eval (vs-modeline-input-method))
+        " "
+        flymake-mode-line-exception
+        flymake-mode-line-counters
+        " "
+        mode-name
+        " "
+        (:eval (vs-modeline-position-rel))
+        (:eval (vs-modeline-position)))))
   :config
+
+  (vs-modeline-def-prop-segment project-el-name
+    (when-let*
+        ((project-info (project-current))
+         (project-path (nth 2 project-info))
+         (project-name (file-name-nondirectory (directory-file-name project-path))))
+      (concat " " project-name))
+    'vs-modeline-project)
+
   (vs-modeline-mode))
 
 ;; File browser
