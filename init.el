@@ -144,7 +144,7 @@
   (general-create-definer my-local-leader
     :states 'normal
     :keymaps 'override
-    :prefix "SPC m")
+    :prefix "\\")
   (my-leader
     "" '(nil :wk "global leader")
     "h" '(:keymap help-map :wk "Help")
@@ -188,8 +188,9 @@
   :after evil
   :ensure t
   :demand t
-  :config
-  (evilem-default-keybindings "\\")
+  :general
+  (my-leader
+    "l" '(:keymap evilem-map :wk "Evilem"))
 )
 
 (my-use-package evil-surround
@@ -775,17 +776,17 @@
   :ensure t
   :general
   (my-leader
-    "j n" '(flymake-goto-next-error :wk "Next error")
-    "j p" '(flymake-goto-prev-error :wk "Prev error")
-    "j j" '(flymake-goto-next-error :wk "Next error")
-    "j k" '(flymake-goto-prev-error :wk "Prev error")
+    "e n" '(flymake-goto-next-error :wk "Next error")
+    "e p" '(flymake-goto-prev-error :wk "Prev error")
+    "e j" '(flymake-goto-next-error :wk "Next error")
+    "e k" '(flymake-goto-prev-error :wk "Prev error")
 
-    "j R" '(flymake-running-backends :wk "Running backends")
-    "j d" '(flymake-disabled-backends :wk "Disabled backends")
-    "j r" '(flymake-reporting-backends :wk "Reported backends")
+    "e R" '(flymake-running-backends :wk "Running backends")
+    "e d" '(flymake-disabled-backends :wk "Disabled backends")
+    "e r" '(flymake-reporting-backends :wk "Reported backends")
 
-    "j l" '(flymake-show-buffer-diagnostics :wk "Show buffer diagnostics")
-    "j L" '(flymake-show-project-diagnostics :wk "Show project diagnostics")
+    "e l" '(flymake-show-buffer-diagnostics :wk "Show buffer diagnostics")
+    "e L" '(flymake-show-project-diagnostics :wk "Show project diagnostics")
     ))
 ;; TODO: what about isearch-lazy-count variable?
 ;; Added in emacs 27, could be an alternative.
@@ -909,9 +910,6 @@
 (my-use-package envrc
   :ensure t
   :demand t
-  :general
-  (my-leader
-    "e" '(:keymap envrc-command-map :wk "Direnv"))
   :config
   (envrc-global-mode 1))
 
