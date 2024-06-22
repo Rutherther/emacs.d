@@ -1,25 +1,5 @@
-;; Lang configs
-;;      C, C++
-;;      VHDL, Verilog
-;;      Latex + templates
-;;      Matlab
-;;      org
-;; Multiple cursors (evil-mc?)
-;; super-save?
-;; https://github.com/svaante/dape
-
-;; eglot?
-
-;; dired compatability of a/b and tab
-;; formatting etc for vhdl-ts - local leader
-
-;; debug vhdl lsp, what is the issue
-;;  how to speed it up?
-
-;; vhdl-ts
-;;  wrong indentation for new line, but it gets fixed afterwards? figure out
-
-;; flycheck errors jumping
+;;; init.el --- Initialization file for Emacs
+;;; Commentary: Emacs Startup File --- initialization for Emacs
 
 (add-to-list 'load-path (locate-user-emacs-file "lisp/"))
 (require 'custom-setup nil t)
@@ -1124,3 +1104,5 @@
 ;;   (verilog-ext-mode-setup))
 
 (setq warning-minimum-level :error)
+
+;;; init.el ends here
