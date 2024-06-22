@@ -1032,14 +1032,33 @@
   :mode
   ("\\.vhdl?\\'" . vhdl-ts-mode)
   :config
-  (my/indent-variable-mode-alist-add vhdl-ts-mode vhdl-ts-indent-level))
+  (my/indent-variable-mode-alist-add vhdl-ts-mode vhdl-ts-indent-level)
+
+  (defun my/vhdl-ts-special-node-identifier-name (node)
+    (let (temp-node)
+      (when node
+        (cond ((string-match vhdl-ts-instance-re (treesit-node-type node))
+              (cond ((setq temp-node (treesit-search-subtree node "\\_<component_instantiation\\_>"))
+                      (treesit-node-text (treesit-node-child-by-field-name temp-node "component") :no-prop))
+                    ((setq temp-node (treesit-search-subtree node "entity_instantiation"))
+                      (treesit-search-subtree node "entity_instantiation")
+                      (treesit-node-text (treesit-node-child temp-node 1) :no-props))
+                    (t (error "Unexpected component_instantiation_statement subnode!"))))
+              (t nil)))))
+
+  (defun my/vhdl-ts-node-identifier-name (node)
+    (let* ((special-identifier-name (my/vhdl-ts-special-node-identifier-name node))
+          (concat-identifier-name
+            (when special-identifier-name
+              (concat " - " special-identifier-name))))
+      (concat
+      (treesit-node-text (treesit-search-subtree node vhdl-ts-identifier-re))
+      concat-identifier-name)))
+
+  (advice-add 'vhdl-ts--node-identifier-name :override #'my/vhdl-ts-node-identifier-name))
 
 (my-use-package hydra
   :ensure t)
-
-;; (my-use-package vhdl-ext
-;;   :ensure t
-;;   :after vhdl-mode)
 
 ;; Verilog
 
