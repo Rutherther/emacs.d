@@ -1015,6 +1015,11 @@
   ;; :mode
   ;; Use vhdl-ts-mode instead
   ;; ("\\.vhdl?\\'" . vhdl-mode)
+  :general
+  (my-local-leader vhdl-mode-map
+    "a" '(nil :wk "Alignment")
+    "a a" '(vhdl-align-group :wk "Align group")
+    "a c" '(vhdl-align-inline-comment-group :wk "Align comment group"))
   :hook
    ((vhdl-mode . vhdl-electric-mode)
     (vhdl-mode . vhdl-stutter-mode)
@@ -1043,12 +1048,22 @@
   :general
   (my-local-leader vhdl-ts-mode-map
     "f" '(nil :wk "Formatting")
-    "f f" '(vhdl-ts-beautify-block-at-point :wk "Beautify block at point")
-    "f b" '(vhdl-ts-beautify-buffer :wk "Beautify buffer"))
+    "f f" '(my/vhdl-ts/beautify-block-at-point :wk "Beautify block at point")
+    "f b" '(my/vhdl-ts/beautify-buffer :wk "Beautify buffer"))
   :custom
   (vhdl-ts-indent-level tab-width)
   :mode
   ("\\.vhdl?\\'" . vhdl-ts-mode)
+  :init
+  (defun my/vhdl-ts/beautify-block-at-point ()
+    (interactive)
+    (vhdl-align-group)
+    (vhdl-ts-beautify-block-at-point))
+
+  (defun my/vhdl-ts/beautify-buffer ()
+    (interactive)
+    (vhdl-align-buffer)
+    (vhdl-ts-beautify-block-at-point))
   :config
   (my/indent-variable-mode-alist-add vhdl-ts-mode vhdl-ts-indent-level)
 
