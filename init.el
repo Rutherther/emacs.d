@@ -1038,7 +1038,7 @@
 )
 
 (my-use-package vhdl-ts-mode
-  :ensure (:host github :repo "Rutherther/vhdl-ts-mode" :rev "a80b690e155975b61036e664f1f2ad592d74ab33")
+  :ensure (:host github :repo "Rutherther/vhdl-ts-mode")
   :after vhdl-mode
   :general
   (my-local-leader vhdl-ts-mode-map
@@ -1065,16 +1065,15 @@
                     (t (error "Unexpected component_instantiation_statement subnode!"))))
               (t nil)))))
 
-  (defun my/vhdl-ts-node-identifier-name (node)
-    (let* ((special-identifier-name (my/vhdl-ts-special-node-identifier-name node))
-          (concat-identifier-name
-            (when special-identifier-name
-              (concat ": " special-identifier-name))))
-      (concat
-      (treesit-node-text (treesit-search-subtree node vhdl-ts-identifier-re))
-      concat-identifier-name)))
+  (defun my/vhdl-ts-node-identifier-name (orig node)
+    (when-let ((original-identifier-name (orig node)))
+      (let* ((special-identifier-name (my/vhdl-ts-special-node-identifier-name node))
+            (concat-identifier-name
+              (when special-identifier-name
+                (concat ": " special-identifier-name))))
+        (concat original-identifier-name concat-identifier-name))))
 
-  (advice-add 'vhdl-ts--node-identifier-name :override #'my/vhdl-ts-node-identifier-name)
+  ;; (advice-add 'vhdl-ts--node-identifier-name :around #'my/vhdl-ts-node-identifier-name)
   )
 
 (my-use-package hydra
