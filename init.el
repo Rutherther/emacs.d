@@ -223,6 +223,17 @@
   :config
   (evil-snipe-mode))
 
+(my-use-package evil-numbers
+  :ensure t
+  :general
+  (normal
+   "g+" '(evil-numbers/inc-at-pt :wk "Increment at point")
+   "g-" '(evil-numbers/dec-at-pt :wk "Decrement at point"))
+  (visual
+   "g+" '(evil-numbers/inc-at-pt-incremental :wk "Increment at point")
+   "g-" '(evil-numbers/dec-at-pt-incremental :wk "Decrement at point"))
+  )
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                VERTICO, CONSULT, EMBARK                               ;;
