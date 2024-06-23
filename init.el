@@ -808,7 +808,7 @@
   :config
   (global-anzu-mode +1))
 
-;; Vterm
+;; Shell
 (my-use-package vterm
   :ensure t
   :commands vterm
@@ -833,6 +833,41 @@
   (my-leader
     "t t" '(vterm-toggle :wk "Toggle terminal")
     "t T" '(vterm :wk "Open terminal")))
+
+(my-use-package shell-command-x
+  :ensure t
+  :config
+  (shell-command-x-mode 1))
+
+(my-use-package run-command
+  :ensure t
+  :general
+  (my-leader
+    "r" '(run-command :wk "Run command"))
+  :custom
+  (run-command-recipes '(
+                         run-command-recipe-watchexec
+                         run-command-recipe-make
+                         ))
+  :init
+  (defun run-command-recipe-watchexec ()
+    "Ask for a command and run it whenever the current file is saved.
+
+  Requires `watchexec' (https://watchexec.github.io/) to be installed."
+    (when-let ((buffer-file (buffer-file-name)))
+      (list
+      (list
+        :display
+        (format "Run arbitrary command whenever `%s' is saved"
+                (file-name-nondirectory buffer-file))
+        :command-name "watchexec"
+        :command-line
+        (lambda ()
+          (let ((command-to-run
+                (shell-quote-argument (read-string "Enter command: "))))
+            (format "watchexec --clear --watch '%s' '%s'"
+                    buffer-file
+                    command-to-run))))))))
 
 ;; MMM mode
 ;; (my-use-package mmm-mode
