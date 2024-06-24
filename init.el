@@ -440,22 +440,40 @@
 (my-use-package wgrep
   :ensure t)
 
-;;; NAVIGATION
+;;; NAVIGATION, Window managements
+(my-use-package emacs
+  :config
+  (add-to-list 'display-buffer-alist
+            '((or (major-mode . Info-mode)
+                  (major-mode . help-mode)
+                  (major-mode . helpful-mode))
+              (display-buffer-reuse-window
+                display-buffer-in-side-window)
+              (reusable-frames . visible)
+              (side . right)
+              (window-width . 0.33)))
+  )
+
 (my-use-package ace-window
   :ensure t
+  :commands (aw-select ace-window ace-window-one-command)
   :general
   (my-leader
     "o" '(ace-window :wk "Ace window")
+    "O" '(ace-window-one-command :wk "Ace window one command")
     "`" '(evil-switch-to-windows-last-buffer :wk "Switch to last buffer")
     "w" '(:keymap evil-window-map :wk "Windows")
   )
+  :bind (("M-o" . ace-window)
+         ("M-O" . ace-window-one-command))
   :custom
   (aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
-  (aw-char-position 'left)
+  (aw-char-position 'top-left)
   (aw-leading-char-style 'char)
-  (aw-scope 'frame)
-  :bind (("M-o" . ace-window))
+  (aw-scope 'global)
+  (aw-dispatch-always t)
   :init
+  ;; Thanks https://karthinks.com/software/fifteen-ways-to-use-embark/#open-any-buffer-by-splitting-any-window
   (eval-when-compile
     (defmacro my/embark-ace-action (fn)
       `(defun ,(intern (concat "my/embark-ace-" (symbol-name fn))) ()
@@ -464,7 +482,29 @@
         (require 'ace-window)
         (let ((aw-dispatch-always t))
           (aw-switch-to-window (aw-select nil))
-          (call-interactively (symbol-function ',fn))))))))
+          (call-interactively (symbol-function ',fn)))))))
+  (defun other-window-mru ()
+    "Select the most recently used window on this frame."
+    (interactive)
+    (when-let ((mru-window
+                (get-mru-window
+                nil nil 'not-this-one-dummy)))
+      (select-window mru-window)))
+  :config
+  (add-to-list 'aw-dispatch-alist '(?i other-window-mru))
+
+  ;; Thanks https://karthinks.com/software/emacs-window-management-almanac/
+  (defun ace-window-one-command ()
+    (interactive)
+    (let ((win (aw-select " ACE")))
+      (when (windowp win)
+        (with-selected-window win
+          (let* ((command (key-binding
+                          (read-key-sequence
+                            (format "Run in %s..." (buffer-name)))))
+                (this-command command))
+            (call-interactively command))))))
+  )
 
 (my-use-package golden-ratio
   :ensure t
@@ -604,6 +644,8 @@
   :custom
   ((vs-modeline-left
    '("%e"
+     (:eval (window-parameter (selected-window) 'ace-window-path))
+     " "
      (:eval (vs-modeline-evil))
      mode-line-process
      (:eval (vs-modeline-project-el-name))
