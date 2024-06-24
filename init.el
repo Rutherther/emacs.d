@@ -336,6 +336,7 @@
   (my-leader
     "f" '(nil :wk "File")
     "f f" '(find-file :wk "Find file")
+    "f F" '(consult-fd :wk "Consult fd")
     "f r" '(consult-recent-file :wk "Recent file")
     "f s" '(save-buffer :wk "Save file")
     "f l" '(consult-locate : "Locate file")
@@ -420,7 +421,8 @@
   (:map search-map
               ("s" . consult-ripgrep-all)
               ("i" . consult-imenu)
-              ("I" . consult-imenu-multi))
+              ("I" . consult-imenu-multi)
+              ("f" . consult-flymake))
   :custom
   (register-preview-delay 0.5)
   (register-preview-function #'consult-register-format)
