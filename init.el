@@ -18,6 +18,7 @@
 
 (add-hook 'emacs-startup-hook #'efs/display-startup-time)
 
+;; Loaded early to prevent all littering
 (my-use-package no-littering
   :ensure (:wait t)
   :demand t
@@ -25,6 +26,55 @@
   (setq no-littering-etc-directory (expand-file-name "stateful/config" user-emacs-directory))
   (setq no-littering-var-directory (expand-file-name "stateful/data" user-emacs-directory)))
 (elpaca-wait) ; No littering
+
+;; Loaded early to prevent loading unnecessary stuff
+(my-use-package general
+  :ensure (:wait t) ; Adds general use-package keyword
+  :config
+  (general-auto-unbind-keys)
+  (general-create-definer my-leader
+    :states '(motion normal)
+    :keymaps 'override
+    :prefix "SPC")
+  (general-create-definer my-local-leader
+    :states 'normal
+    :keymaps 'override
+    :prefix "\\")
+  (my-leader
+    "" '(nil :wk "global leader")
+    "h" '(:keymap help-map :wk "Help")
+    "C-g" '(keyboard-quit :wk "abort")))
+
+;; Loaded early cause I genuinely am not able to use emacs much without evil
+;; so if stuff brokes, it's good to have evil at hand
+(my-use-package evil
+  :ensure t
+  :demand t
+  :general
+  (my-leader
+    "u" '(universal-argument :wk "Universal argument"))
+  :bind
+  (:map evil-window-map
+    ("d" . evil-window-delete)
+    ("o" . ace-window))
+  :custom
+  (evil-undo-system 'undo-redo)
+  (evil-want-integration t)
+  (evil-want-keybinding nil)
+  :init
+  ; evil-want-Y-yank-to-eol cannot be set by custom. Use this instead
+  (setq evil-want-Y-yank-to-eol t)
+  :config
+	(my-unbind-key-in-evil-states "C-.")
+  (evil-mode 1))
+
+(my-use-package evil-collection
+  :after evil
+  :ensure t
+  :demand t
+  :config
+  (evil-collection-init))
+(elpaca-wait)
 
 ;; some visual configs
 (my-use-package gruvbox-theme
@@ -125,6 +175,8 @@
 ;;                                            KEYS                                       ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Early keys stuff (general.el) is loaded earlier
+
 (my-use-package which-key
   :ensure t
   :demand t
@@ -133,56 +185,12 @@
   :config
   (which-key-mode 1))
 
-(my-use-package general
-  :ensure (:wait t) ; Adds general use-package keyword
-  :config
-  (general-auto-unbind-keys)
-  (general-create-definer my-leader
-    :states '(motion normal)
-    :keymaps 'override
-    :prefix "SPC")
-  (general-create-definer my-local-leader
-    :states 'normal
-    :keymaps 'override
-    :prefix "\\")
-  (my-leader
-    "" '(nil :wk "global leader")
-    "h" '(:keymap help-map :wk "Help")
-    "C-g" '(keyboard-quit :wk "abort"))
-)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                            EVIL                                       ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(my-use-package evil
-  :ensure t
-  :demand t
-  :general
-  (my-leader
-    "u" '(universal-argument :wk "Universal argument"))
-  :bind
-  (:map evil-window-map
-    ("d" . evil-window-delete)
-    ("o" . ace-window))
-  :custom
-  (evil-undo-system 'undo-redo)
-  (evil-want-integration t)
-  (evil-want-keybinding nil)
-  :init
-  ; evil-want-Y-yank-to-eol cannot be set by custom. Use this instead
-  (setq evil-want-Y-yank-to-eol t)
-  :config
-	(my-unbind-key-in-evil-states "C-.")
-  (evil-mode 1))
-
-(my-use-package evil-collection
-  :after evil
-  :ensure t
-  :demand t
-  :config
-  (evil-collection-init))
+;; Early evil stuff is loaded earlier
 
 (my-use-package evil-easymotion
   :after evil
