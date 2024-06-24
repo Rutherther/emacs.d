@@ -53,10 +53,6 @@
   :general
   (my-leader
     "u" '(universal-argument :wk "Universal argument"))
-  :bind
-  (:map evil-window-map
-    ("d" . evil-window-delete)
-    ("o" . ace-window))
   :custom
   (evil-undo-system 'undo-redo)
   (evil-want-integration t)
@@ -301,17 +297,6 @@
    ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
   :custom
   (prefix-help-command #'embark-prefix-help-command)
-  :init
-
-  ;; Show the Embark target at point via Eldoc. You may adjust the
-  ;; Eldoc strategy, if you want to see the documentation from
-  ;; multiple providers. Beware that using this can be a little
-  ;; jarring since the message shown in the minibuffer can be more
-  ;; than one line, causing the modeline to move up and down:
-
-  ;; (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
-  ;; (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
-
   :config
   ; TODO: use general.el :general block
   (define-key embark-file-map     (kbd "o") (my/embark-ace-action find-file))
@@ -354,15 +339,6 @@
     "j c" '(consult-flymake :wk "Consult flymake")
 
     "y" '(consult-yank-pop :wk "Yank pop")
-
-    ;; "g" '(nil :wk "Goto")
-    ;; "g f" '(consult-flymake :wk "Goto flymake")
-    ;; "g l" '(consult-goto-line :wk "Goto line")
-    ;; "g o" '(consult-outline :wk "Goto outline")
-    ;; "g m" '(consult-mark :wk "Goto mark")
-    ;; "g k" '(consult-global-mark :wk "Goto global mark")
-    ;; "g i" '(consult-imenu :wk "Goto imenu")
-    ;; "g I" '(consult-imenu-multi :wk "Goto imenu multi")
 
     "s" '(:keymap search-map :wk "Search")
   )
@@ -472,10 +448,15 @@
     "o" '(ace-window :wk "Ace window")
     "O" '(ace-window-one-command :wk "Ace window one command")
     "`" '(evil-switch-to-windows-last-buffer :wk "Switch to last buffer")
+    "<TAB>" '(evil-switch-to-windows-last-buffer :wk "Switch to last buffer")
     "w" '(:keymap evil-window-map :wk "Windows")
   )
-  :bind (("M-o" . ace-window)
+  :bind
+  (("M-o" . ace-window)
          ("M-O" . ace-window-one-command))
+  (:map evil-window-map
+    ("d" . evil-window-delete)
+    ("o" . ace-window))
   :custom
   (aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
   (aw-char-position 'top-left)
@@ -513,8 +494,7 @@
                           (read-key-sequence
                             (format "Run in %s..." (buffer-name)))))
                 (this-command command))
-            (call-interactively command))))))
-  )
+            (call-interactively command)))))))
 
 (my-use-package golden-ratio
   :ensure t
@@ -626,14 +606,14 @@
   :ensure t
   :custom
   (vc-handled-backends '(Git))
-  (project-switch-commands '(
-                             (consult-project-buffer "Find buffer" "b")
-                             (project-find-file "Find file" "f")
-                             (consult-ripgrep-all "Search" "s")
-                             (project-dired "Dired" "d")
-                             ;; (vterm-toggle "Vterm" "v") ;; TODO: make sure it opens inside of the project!
-                             (my/magit-current-window "Magit" "m")))
-  :general
+  (project-switch-commands
+   '(
+     (consult-project-buffer "Find buffer" "b")
+     (project-find-file "Find file" "f")
+     (consult-ripgrep-all "Search" "s")
+     (project-dired "Dired" "d")
+     ;; (vterm-toggle "Vterm" "v") ;; TODO: make sure it opens inside of the project!
+     (my/magit-current-window "Magit" "m"))) :general
   (my-leader
     "p" '(:keymap project-prefix-map :wk "Project"))
   :init
@@ -914,8 +894,8 @@
         (let ((completion-extra-properties extras)
               completion-cycle-threshold completion-cycling)
           (consult-completion-in-region beg end table pred)))))
-  (global-corfu-mode 1)
   :config
+  (global-corfu-mode 1)
   (add-to-list 'corfu-continue-commands #'corfu-move-to-minibuffer))
 
 (use-package cape
@@ -1084,11 +1064,12 @@
   (vhdl-reset-kind 'sync)
   (vhdl-reset-name "rst_in")
   (vhdl-basic-offset 2)
+  (vhdl-end-comment-column 300)
   :init
   ;; VHDL lsp servers don't have good completion capabilities for now.
   ;; Remove this when they are ready.
   (defun my/disable-eglot-completion ()
-    (setq-local eglot-ignored-server-capabilities eglot-ignored-server-capabilities)
+    (make-local-variable 'eglot-ignored-server-capabilites)
     (add-to-list 'eglot-ignored-server-capabilities :completionProvider))
   :config
   (add-to-list 'eglot-server-programs
@@ -1145,33 +1126,33 @@
   ;; (advice-add 'vhdl-ts--node-identifier-name :around #'my/vhdl-ts-node-identifier-name)
   )
 
-(my-use-package hydra
-  :ensure t)
+;; (my-use-package hydra
+;;   :ensure t)
 
 ;; Verilog
 
-(my-use-package verilog-mode
-  :ensure nil
-  :mode
-  ("\\.v\\'" . verilog-mode)
-  ("\\.sv\\'" . verilog-mode)
-  :custom
-  (verilog-indent-lists nil)
-  (verilog-indent-level 2)
-  (verilog-indent-level-behavioral 2)
-  (verilog-indent-level-declaration 2)
-  (verilog-indent-level-module 2)
-  (verilog-case-indent 2)
-  (verilog-cexp-indent 2)
-  (verilog-align-ifelse t)
-  (verilog-auto-delete-trailing-whitespace t)
-  (verilog-auto-newline nil)
-  (verilog-auto-save-policy nil)
-  (verilog-auto-template-warn-unused t)
-  (verilog-tab-to-comment t)
-  (verilog-highlight-modules t)
-  (verilog-highlight-grouping-keywords t)
-)
+;; (my-use-package verilog-mode
+;;   :ensure nil
+;;   :mode
+;;   ("\\.v\\'" . verilog-mode)
+;;   ("\\.sv\\'" . verilog-mode)
+;;   :custom
+;;   (verilog-indent-lists nil)
+;;   (verilog-indent-level 2)
+;;   (verilog-indent-level-behavioral 2)
+;;   (verilog-indent-level-declaration 2)
+;;   (verilog-indent-level-module 2)
+;;   (verilog-case-indent 2)
+;;   (verilog-cexp-indent 2)
+;;   (verilog-align-ifelse t)
+;;   (verilog-auto-delete-trailing-whitespace t)
+;;   (verilog-auto-newline nil)
+;;   (verilog-auto-save-policy nil)
+;;   (verilog-auto-template-warn-unused t)
+;;   (verilog-tab-to-comment t)
+;;   (verilog-highlight-modules t)
+;;   (verilog-highlight-grouping-keywords t)
+;; )
 
 ;; (my-use-package verilog-ext
 ;;   :ensure t
