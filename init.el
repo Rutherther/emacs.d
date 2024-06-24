@@ -117,7 +117,7 @@
      "XDG_DATA_HOME"
      "NIX_PATH"))
   :config
-  (unless (memq window-system '(w32))
+  (unless (memq window-system '(w32 android))
     (exec-path-from-shell-initialize)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -999,7 +999,9 @@
 (my-use-package emacs
   :ensure nil
   :custom
-  (treesit-font-lock-level 4))
+  (treesit-font-lock-level 4)
+  :config
+  (which-function-mode 1))
 
 ;; Nix
 (my-use-package nix-mode
