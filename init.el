@@ -2,6 +2,7 @@
 ;;; Commentary: Emacs Startup File --- initialization for Emacs
 
 (add-to-list 'load-path (locate-user-emacs-file "lisp/"))
+(require 'android-setup nil t)
 (require 'custom-setup nil t)
 (require 'functions)
 (require 'elpaca-loader)
