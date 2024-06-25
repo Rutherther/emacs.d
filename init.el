@@ -33,9 +33,10 @@
   :config
   (general-auto-unbind-keys)
   (general-create-definer my-leader
-    :states '(motion normal)
+    :states '(motion normal insert visual emacs)
     :keymaps 'override
-    :prefix "SPC")
+    :prefix "SPC"
+    :non-normal-prefix "M-SPC")
   (general-create-definer my-local-leader
     :states 'normal
     :keymaps 'override
