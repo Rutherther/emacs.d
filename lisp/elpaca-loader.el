@@ -39,7 +39,7 @@
 (add-hook 'after-init-hook #'elpaca-process-queues)
 (elpaca `(,@elpaca-order))
 
-(when (eq window-system 'w32)
+(when (eq system-type 'windows-nt)
   (elpaca-no-symlink-mode))
 
 (elpaca elpaca-use-package

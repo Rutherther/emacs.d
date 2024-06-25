@@ -58,7 +58,7 @@
 (setq-default font-lock-multiline t)
 
 (when
-    (memq window-system '(pgtk x))
+    (memq system-type '(gnu gnu/linux))
   (customize-set-variable
   'default-frame-alist
   '((font . "Hack")

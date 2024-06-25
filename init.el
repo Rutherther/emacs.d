@@ -165,7 +165,7 @@
      "XDG_DATA_HOME"
      "NIX_PATH"))
   :config
-  (unless (memq window-system '(w32 android))
+  (unless (memq system-type '(windows-nt android))
     (exec-path-from-shell-initialize)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
