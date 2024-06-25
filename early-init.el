@@ -56,11 +56,14 @@
 ;; Font rendering performance
 (setq-default font-lock-support-mode 'jit-lock-mode)
 (setq-default font-lock-multiline t)
-(customize-set-variable
- 'default-frame-alist
- '((font . "Hack")
-   (background-color . "#282828")
-   (foreground-color . "#ebdbb2")))
+
+(when
+    (memq window-system '(pgtk x))
+  (customize-set-variable
+  'default-frame-alist
+  '((font . "Hack")
+    (background-color . "#282828")
+    (foreground-color . "#ebdbb2"))))
 
 (when (fboundp 'startup-redirect-eln-cache)
   (startup-redirect-eln-cache
