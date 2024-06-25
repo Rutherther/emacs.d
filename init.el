@@ -327,6 +327,7 @@
     "f l" '(consult-locate : "Locate file")
 
     "b" '(nil :wk "Buffer")
+    "b r" '(revert-buffer :wk "Revert buffer")
     "b b" '(consult-buffer :wk "Switch buffer")
     "b B" '(consult-project-buffer :wk "Switch project buffer")
     "," '(consult-buffer :wk "Switch buffer")
@@ -428,6 +429,9 @@
 
 ;;; NAVIGATION, Window managements
 (my-use-package emacs
+  :general
+  (my-leader
+    "t m" '(switch-to-minibuffer :wk "Switch to minibuffer"))
   :config
   (add-to-list 'display-buffer-alist
             '((or (major-mode . Info-mode)
@@ -438,7 +442,17 @@
               (reusable-frames . visible)
               (side . right)
               (window-width . 0.33)))
-  )
+
+  (add-to-list 'display-buffer-alist
+            '("\\*vterm\\*" nil
+              (dedicated . t)))
+
+  (defun switch-to-minibuffer ()
+    "Switch to minibuffer window."
+    (interactive)
+    (if (active-minibuffer-window)
+        (select-window (active-minibuffer-window))
+      (error "Minibuffer is not active"))))
 
 (my-use-package ace-window
   :ensure t
