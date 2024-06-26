@@ -61,7 +61,10 @@
     (memq system-type '(gnu gnu/linux))
   (customize-set-variable
   'default-frame-alist
-  '((font . "Hack")
+  '((vertical-scroll-bars . nil)
+    (horizontal-scroll-bars . nil)
+    ; Style
+    (font . "Hack")
     (background-color . "#282828")
     (foreground-color . "#ebdbb2"))))
 
@@ -79,7 +82,6 @@
 ;; Visual stuff init
 (menu-bar-mode -1)
 (tool-bar-mode -1)
-(scroll-bar-mode -1)
 (tab-bar-mode -1)
 (blink-cursor-mode -1)
 (setq ring-bell-function #'ignore)

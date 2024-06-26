@@ -890,14 +890,14 @@
 
 (my-use-package corfu
   :ensure t
-  :commands completion-at-point
+  :demand t
   :bind
-  ("M-m" . corfu-move-to-minibuffer)
   ("C-SPC" . completion-at-point)
   (:map corfu-map
-          ("M-q" . corfu-quick-complete)
-          ("C-q" . corfu-quick-complete)
-          ("M-SPC" . corfu-insert-separator))
+        ("M-m" . corfu-move-to-minibuffer)
+        ("M-q" . corfu-quick-complete)
+        ("C-q" . corfu-quick-complete)
+        ("M-SPC" . corfu-insert-separator))
   :custom
   (corfu-cycle t)
   (corfu-quit-no-match 'separator)
