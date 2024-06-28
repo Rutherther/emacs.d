@@ -349,7 +349,7 @@
     "d m" '(consult-man :wk "Consult uan")
     "d i" '(consult-info :wk "Consult info")
 
-    "j c" '(consult-flymake :wk "Consult flymake")
+    "e c" '(consult-flymake :wk "Consult flymake")
 
     "y" '(consult-yank-pop :wk "Yank pop")
 
@@ -466,6 +466,29 @@
     (if (active-minibuffer-window)
         (select-window (active-minibuffer-window))
       (error "Minibuffer is not active"))))
+
+(my-use-package popper
+  :ensure t
+  :general
+  (my-leader
+    "k" '(nil :wk "Popper")
+    "k s" '(window-toggle-side-windows :wk "Toggle side windows")
+    "k k" '(popper-toggle :wk "Popper toggle")
+    "k t" '(popper-toggle-type :wk "Popper toggle popup")
+    "k j" '(popper-cycle :wk "Popper cycle")
+    "k J" '(popper-cycle-backwards :wk "Popper cycle backwards"))
+  :custom
+  (popper-echo-dispatch-keys '(?q ?w ?e ?r ?t ?y ?u ?i ?o ?p))
+  (popper-group-function #'popper-group-by-directory)
+  (popper-reference-buffers
+   '("\\*Messages\\*"
+     "Output\\*$"
+     "\\*Async Shell Command\\*"
+     "\\*vterm\\*"
+     compilation-mode))
+  :config
+  (popper-mode 1)
+  (popper-echo-mode 1))
 
 (my-use-package ace-window
   :ensure t
