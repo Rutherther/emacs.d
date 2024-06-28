@@ -794,10 +794,11 @@
   (my-local-leader hl-todo-mode-map
     "t j" '(hl-todo-next :wk "next TODO" :jump t)
     "t k" '(hl-todo-previous :wk "previous TODO" :jump t)))
-(my-use-package magit-todos
-  :ensure t
-  :after magit
-  :config (magit-todos-mode 1))
+
+;; (my-use-package magit-todos
+;;   :ensure t
+;;   :after magit
+;;   :config (magit-todos-mode 1))
 
 (my-use-package git-gutter
   :ensure t
