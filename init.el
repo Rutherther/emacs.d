@@ -45,16 +45,25 @@
   (my-leader
     "" '(nil :wk "global leader")
     "h" '(:keymap help-map :wk "Help")
-    "C-g" '(keyboard-quit :wk "abort")))
+    "C-g" '(keyboard-quit :wk "abort")
+    "!" '(shell-command :wk "Shell command")
+    "&" '(async-shell-command :wk "Async shell command")
+    ;; "'" '()
+    "x" '(execute-extended-command :wk "Execute extended command")
+    ":" '(eval-expression :wk "Evaluate expression")))
 
 ;; Loaded early cause I genuinely am not able to use emacs much without evil
 ;; so if stuff brokes, it's good to have evil at hand
+;; (general-def 'insert 'override
+;;   "C-\\" 'evil-normal-state)
 (my-use-package evil
   :ensure t
   :demand t
   :general
   (my-leader
     "u" '(universal-argument :wk "Universal argument"))
+  (general-def 'insert 'override
+   "C-\\" '(evil-normal-state :wk "Enter normal state"))
   :custom
   (evil-undo-system 'undo-redo)
   (evil-want-integration t)
@@ -331,6 +340,7 @@
     "b" '(nil :wk "Buffer")
     "b r" '(revert-buffer :wk "Revert buffer")
     "b b" '(consult-buffer :wk "Switch buffer")
+    "b k" '(kill-buffer :wk "Kill buffer")
     "b B" '(consult-project-buffer :wk "Switch project buffer")
     "," '(consult-buffer :wk "Switch buffer")
 
@@ -344,6 +354,7 @@
     "y" '(consult-yank-pop :wk "Yank pop")
 
     "s" '(:keymap search-map :wk "Search")
+    "/" '(consult-ripgrep-all :wk "Search project")
   )
   :bind (;; C-c bindings in `mode-specific-map'
          ("C-c M-x" . consult-mode-command)
@@ -465,11 +476,10 @@
     "O" '(ace-window-one-command :wk "Ace window one command")
     "`" '(evil-switch-to-windows-last-buffer :wk "Switch to last buffer")
     "<TAB>" '(evil-switch-to-windows-last-buffer :wk "Switch to last buffer")
-    "w" '(:keymap evil-window-map :wk "Windows")
-  )
+    "w" '(:keymap evil-window-map :wk "Windows"))
   :bind
   (("M-o" . ace-window)
-         ("M-O" . ace-window-one-command))
+   ("M-O" . ace-window-one-command))
   (:map evil-window-map
     ("d" . evil-window-delete)
     ("o" . ace-window))
@@ -760,9 +770,11 @@
   (with-editor-mode . evil-insert-state)
   :general
   (my-leader
-    "g" '(nil :wk "Magit")
-    "g g" '(magit-status :wk "Magit")
-    "g /" '(magit-dispatch :wk "Dispatch")
+    "g" '(nil :wk "Git")
+    "g g" '(magit-status :wk "Git status")
+    "g c" '(magit-clone :wk "Git clone")
+    "g i" '(magit-init :wk "Git init")
+    "g ." '(magit-dispatch :wk "Dispatch")
     "g b" '(magit-blame :wk "Blame"))
   :custom
   (magit-save-repository-buffers 'dontask)
