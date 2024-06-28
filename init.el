@@ -1069,6 +1069,14 @@
 ;;   :custom
 ;;   (bash-ts-mode-indent-offset 2))
 
+;; Python
+(my-use-package python-mode
+  :mode
+  (("\\.py[iw]?\\'" . python-ts-mode))
+  :config
+  (my/indent-variable-mode-alist-add python-mode python-indent-offset)
+  (my/indent-variable-mode-alist-add python-ts-mode python-indent-offset))
+
 ;; VHDL
 (my-use-package vhdl-mode
   :ensure nil
