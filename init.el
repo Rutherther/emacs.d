@@ -489,6 +489,8 @@
   (aw-leading-char-style 'char)
   (aw-scope 'global)
   (aw-dispatch-always t)
+  :custom-face
+  (aw-background-face ((t (:foreground "dim gray" :background "#1d2021"))))
   :init
   ;; Thanks https://karthinks.com/software/fifteen-ways-to-use-embark/#open-any-buffer-by-splitting-any-window
   (eval-when-compile
@@ -508,6 +510,7 @@
                 nil nil 'not-this-one-dummy)))
       (select-window mru-window)))
   :config
+  (ace-window-display-mode 1)
   (add-to-list 'aw-dispatch-alist '(?i other-window-mru))
 
   ;; Thanks https://karthinks.com/software/emacs-window-management-almanac/
@@ -660,7 +663,7 @@
   :custom
   ((vs-modeline-left
    '("%e"
-     (:eval (window-parameter (selected-window) 'ace-window-path))
+     (:eval (when ace-window-display-mode (window-parameter (selected-window) 'ace-window-path)))
      " "
      (:eval (vs-modeline-evil))
      mode-line-process
