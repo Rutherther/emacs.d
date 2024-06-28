@@ -635,6 +635,7 @@
   :ensure t
   :custom
   (vc-handled-backends '(Git))
+  (project-vc-extra-root-markers '(".project"))
   (project-switch-commands
    '(
      (consult-project-buffer "Find buffer" "b")
