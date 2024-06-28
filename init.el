@@ -496,13 +496,15 @@
   :general
   (my-leader
     "o" '(ace-window :wk "Ace window")
-    "O" '(ace-window-one-command :wk "Ace window one command")
+    "C-o" '(ace-window-one-command :wk "Ace window one command")
+    "O" '(ace-window-prefix :wk "Ace window prefix")
     "`" '(evil-switch-to-windows-last-buffer :wk "Switch to last buffer")
     "<TAB>" '(evil-switch-to-windows-last-buffer :wk "Switch to last buffer")
     "w" '(:keymap evil-window-map :wk "Windows"))
   :bind
   (("M-o" . ace-window)
-   ("M-O" . ace-window-one-command))
+   ("M-O" . ace-window-prefix)
+   ("M-C-o". ace-window-one-command))
   (:map evil-window-map
     ("d" . evil-window-delete)
     ("o" . ace-window))
@@ -515,6 +517,24 @@
   :custom-face
   (aw-background-face ((t (:foreground "dim gray" :background "#1d2021"))))
   :init
+  ;; (defun ace-window-prefix ()
+  ;;   (interactive)
+  ;;   (let ((win (aw-select " ACE")))
+  ;;     (when (windowp win)
+  ;;       (display-buffer-override-next-command
+  ;;         (lambda (buffer alist)
+  ;;           (cons win 'window))
+  ;;       (message "Display next command buffer in selected window...")))))
+
+  (defun ace-window-prefix ()
+    (interactive)
+    (setq ace-window-prefixed-window (aw-select " ACE"))
+    (when (windowp ace-window-prefixed-window)
+      (display-buffer-override-next-command
+       (lambda (buffer alist)
+         (cons ace-window-prefixed-window 'reuse)))
+      (message "Display next command buffer in selected window...")))
+
   ;; Thanks https://karthinks.com/software/fifteen-ways-to-use-embark/#open-any-buffer-by-splitting-any-window
   (eval-when-compile
     (defmacro my/embark-ace-action (fn)
@@ -534,7 +554,28 @@
       (select-window mru-window)))
   :config
   (ace-window-display-mode 1)
-  (add-to-list 'aw-dispatch-alist '(?i other-window-mru))
+  (setq aw-dispatch-alist
+      '((?k aw-delete-window "Delete Window")
+        (?x aw-swap-window "Swap Windows")
+        (?m my/aw-take-over-window "Move Window")
+        (?c aw-copy-window "Copy Window")
+        (?j aw-switch-buffer-in-window "Select Buffer")
+        (?o aw-flip-window)
+        (?b aw-switch-buffer-other-window "Switch Buffer Other Window")
+        ;; (?c aw-split-window-fair "Split Fair Window")
+        (?s my-aw-split-window-vert "Split Vert Window")
+        (?v my-aw-split-window-horz "Split Horz Window")
+        (?o delete-other-windows "Delete Other Windows")
+        (?i other-window-mru)
+        (?? aw-show-dispatch-help)))
+
+  (defun my-aw-split-window-vert (window)
+    "Split WINDOW vertically, and select the new one."
+    (select-window (split-window-vertically)))
+
+  (defun my-aw-split-window-horz (window)
+    "Split WINDOW horizontally, and select the new one."
+    (select-window (split-window-horizontally)))
 
   ;; Thanks https://karthinks.com/software/emacs-window-management-almanac/
   (defun ace-window-one-command ()
@@ -554,7 +595,6 @@
   :custom
   (golden-ratio-exclude-buffer-regexp '("dape"))
   (golden-ratio-exclude-modes '("ediff-mode"))
-  ;; Work with evil
   (golden-ratio-extra-commands '(
                                  ;; ace-window
                                  ace-window
