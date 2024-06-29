@@ -1031,12 +1031,17 @@
 ;; Programming
 (my-use-package jsonrpc
   :ensure t)
+
 (my-use-package eldoc
-  :ensure t)
+  :ensure t
+  :custom
+  (eldoc-documentation-strategy 'eldoc-documentation-compose-eagerly))
 
 (my-use-package eglot
   :ensure t
   :commands (eglot eglot-ensure)
+  :hook
+  ((eglot-managed-mode . mp-eglot-eldoc))
   :custom
   (eglot-ignored-server-capabilities '(:documentHighlightProvider))
   (eglot-stay-out-of '(imenu)) ; I prefer the ts imenu for now
@@ -1044,7 +1049,12 @@
   (normal eglot--managed-mode
    :definer 'minor-mode
    "gR" '(eglot-rename :wk "Rename identifier")
-   "g." '(eglot-code-actions :wk "Code actions")))
+   "g." '(eglot-code-actions :wk "Code actions"))
+  :preface
+  ; Thanks https://www.masteringemacs.org/article/seamlessly-merge-multiple-documentation-sources-eldoc
+  (defun mp-eglot-eldoc ()
+    (setq eldoc-documentation-strategy
+            'eldoc-documentation-compose-eagerly)))
 
 (my-use-package envrc
   :ensure t
