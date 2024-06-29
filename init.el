@@ -1161,7 +1161,8 @@
 ;;   (bash-ts-mode-indent-offset 2))
 
 ;; Python
-(my-use-package python-mode
+(my-use-package emacs
+  :ensure nil
   :mode
   (("\\.py[iw]?\\'" . python-ts-mode))
   :config
@@ -1169,9 +1170,11 @@
   (my/indent-variable-mode-alist-add python-ts-mode python-indent-offset))
 
 ;; Matlab
-(my-use-package matlab-mode
-  :ensure t
+(my-use-package matlab
+  :ensure matlab-mode
+  :commands matlab-mode
   :mode "\\.m\\'"
+  :after eglot
   :general
   (my-local-leader matlab-mode-map
     "b" '(mlgud-break :wk "Breakpoint")
@@ -1192,13 +1195,14 @@
     "q" '(mlgud-stop-subjob :wk "Quit"))
   :config
   (add-to-list 'eglot-server-programs
-               '(matlab-mode . ("matlab-language-server")))
-  (my/indent-variable-mode-alist-add matlab-mode matlab-indent-level))
+               '(matlab-mode . ("matlab-language-server" "--stdio")))
+  (my/indent-variable-mode-alist-add matlab-mode matlab-indent-level)
+  )
 
 ;; Vhdl
 (my-use-package vhdl-mode
   :ensure nil
-  :demand t
+  :commands vhdl-mode
   :after eglot
   ;; :mode
   ;; Use vhdl-ts-mode instead
@@ -1234,6 +1238,7 @@
 (my-use-package vhdl-ts-mode
   :ensure (:host github :repo "Rutherther/vhdl-ts-mode")
   :after vhdl-mode
+  :demand t
   :general
   (my-local-leader vhdl-ts-mode-map
     "f" '(nil :wk "Formatting")
