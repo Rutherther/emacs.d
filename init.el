@@ -175,7 +175,11 @@
      "NIX_PATH"))
   :config
   (unless (memq system-type '(windows-nt android))
-    (exec-path-from-shell-initialize)))
+    (exec-path-from-shell-initialize))
+  ;; This is for Matlab + my WM without reparenting.
+  ;; This cannot be sourced from the env, as the script that adds
+  ;; this environment, is not part of shell initialization
+  (setenv "_JAVA_AWT_WM_NONREPARENTING" "1"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -484,7 +488,9 @@
    '("\\*Messages\\*"
      "Output\\*$"
      "\\*Async Shell Command\\*"
+     ;; "^\\*Embark Collect: "
      "\\*vterm\\*"
+     "\\*MATLAB\\*"
      compilation-mode))
   :config
   (popper-mode 1)
@@ -1155,7 +1161,34 @@
   (my/indent-variable-mode-alist-add python-mode python-indent-offset)
   (my/indent-variable-mode-alist-add python-ts-mode python-indent-offset))
 
-;; VHDL
+;; Matlab
+(my-use-package matlab-mode
+  :ensure t
+  :mode "\\.m\\'"
+  :general
+  (my-local-leader matlab-mode-map
+    "b" '(mlgud-break :wk "Breakpoint")
+    "x" '(mlgud-remove :wk "Remove breakpoint")
+    "c" '(matlab-shell-run-cell :wk "Run cell")
+    "r" '(matlab-shell-run-region :wk  "Run region")
+    "v" '(matlab-shell-run-command :wk "Run command"))
+  (my-local-leader matlab-shell-gud-minor-mode-map
+    "b" '(mlgud-break :wk "Breakpoint")
+    "x" '(mlgud-remove :wk "Remove breakpoint")
+    "v" '(mlgud-list-breakpoints :wk "List breakpoints")
+    "s" '(mlgud-step :wk "Step")
+    "n" '(mlgud-next :wk "Next")
+    "f" '(mlgud-finish :wk "Finish function")
+    "c" '(mlgud-cont :wk "Continue")
+    "w" '(mlgud-show-stack :wk "Stack")
+    "e" '(matlab-shell-gud-show-symbol-value :wk "Symbol")
+    "q" '(mlgud-stop-subjob :wk "Quit"))
+  :config
+  (add-to-list 'eglot-server-programs
+               '(matlab-mode . ("matlab-language-server")))
+  (my/indent-variable-mode-alist-add matlab-mode matlab-indent-level))
+
+;; Vhdl
 (my-use-package vhdl-mode
   :ensure nil
   :demand t
