@@ -599,7 +599,10 @@
   :ensure t
   :demand t
   :custom
-  (golden-ratio-exclude-buffer-regexp '("dape"))
+  (golden-ratio-exclude-buffer-regexp
+   '(
+     "dape"
+    "^\\*eldoc"))
   (golden-ratio-exclude-modes '("ediff-mode"))
   (golden-ratio-extra-commands '(
                                  ;; ace-window
@@ -1041,7 +1044,11 @@
 (my-use-package eldoc
   :ensure t
   :custom
-  (eldoc-documentation-strategy 'eldoc-documentation-compose-eagerly))
+  (eldoc-documentation-strategy 'eldoc-documentation-compose-eagerly)
+  :config
+  (add-to-list 'display-buffer-alist
+              '("^\\*eldoc for" display-buffer-at-bottom
+                (window-height . 4))))
 
 (my-use-package eglot
   :ensure t
