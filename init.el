@@ -446,9 +446,28 @@
 
 ;;; NAVIGATION, Window managements
 (my-use-package emacs
+  :after evil
   :general
   (my-leader
     "t m" '(switch-to-minibuffer :wk "Switch to minibuffer"))
+  (normal
+   "[f" '(+evil/next-frame :wk "Next frame")
+   "]f" '(+evil/previous-frame :wk "Previous frame"))
+  :preface
+  ; Taken from doomemacs. https://github.com/doomemacs/doomemacs/blob/a0dadda2666886840e63f28d96a03a6f635a4fe6/modules/editor/evil/autoload/unimpaired.el
+  (defun +evil/next-frame (count)
+    "Focus next frame."
+    (interactive "p")
+    (dotimes (_ (abs count))
+      (let ((frame (if (> count 0) (next-frame) (previous-frame))))
+        (if (eq frame (selected-frame))
+            (user-error "No other frame")
+          (select-frame-set-input-focus frame)))))
+  (defun +evil/previous-frame (count)
+    "Focus previous frame."
+    (interactive "p")
+    (+evil/next-frame (- count)))
+
   :config
   (add-to-list 'display-buffer-alist
             '((or (major-mode . Info-mode)
@@ -864,12 +883,16 @@
 
 (my-use-package hl-todo
   :ensure (:pin t :tag "v3.6.0")
+  :after evil
   :hook
   ((prog-mode text-mode) . hl-todo-mode)
   :general
   (my-local-leader hl-todo-mode-map
     "t j" '(hl-todo-next :wk "next TODO" :jump t)
-    "t k" '(hl-todo-previous :wk "previous TODO" :jump t)))
+    "t k" '(hl-todo-previous :wk "previous TODO" :jump t))
+  (normal hl-todo-mode-map
+   "]t" '(hl-todo-next :wk "previous TODO" :jump t)
+   "[t" '(hl-todo-previous :wk "next TODO" :jump t)))
 
 ;; (my-use-package magit-todos
 ;;   :ensure t
@@ -878,6 +901,8 @@
 
 (my-use-package git-gutter
   :ensure t
+  :demand t
+  :after evil
   :general
   (my-leader
     "g p" '(git-gutter:previous-hunk :wk "Previous hunk")
@@ -887,6 +912,9 @@
     "g v s" '(git-gutter:stage-hunk :wk "Stage hunk")
     "g v r" '(git-gutter:revert-hunk :wk "Revert hunk")
     "g v SPC" '(git-gutter:mark-hunk :wk "Mark hunk"))
+  (normal
+   "]d" '(git-gutter:next-hunk :wk "Next hunk")
+   "[d" '(git-gutter:previous-hunk :wk "Next hunk"))
   :config
   (global-git-gutter-mode 1))
 
