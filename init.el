@@ -765,7 +765,7 @@
      (:eval (when buffer-read-only " RO"))))
     (vs-modeline-right
       '(
-        (:eval (when which-function-mode which-func-format))
+        (:eval (when which-func-mode which-func-format))
         (:eval (when which-function-mode " "))
         (:eval (vs-modeline-input-method))
         (:eval (when flymake-mode " "))
@@ -1138,7 +1138,15 @@
   :custom
   (treesit-font-lock-level 4)
   :config
-  (which-function-mode 1))
+  (which-function-mode 1)
+
+  (defun my/which-func-try-to-enable ()
+    (unless (or (not which-function-mode)
+                (local-variable-p 'which-func-mode))
+      (setq which-func-mode (or (eq which-func-modes t)
+                                (and (apply 'derived-mode-p which-func-modes) t)))))
+
+  (advice-add 'which-func-try-to-enable :override #'my/which-func-try-to-enable))
 
 ;; Nix
 (my-use-package nix-mode
