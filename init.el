@@ -1211,6 +1211,9 @@
   :commands matlab-mode
   :mode "\\.m\\'"
   :after eglot
+  :custom
+  (matlab-shell-run-region-function 'matlab-shell-region->script)
+  (matlab-shell-tab-use-company nil)
   :general
   (my-local-leader matlab-mode-map
     "b" '(mlgud-break :wk "Breakpoint")
