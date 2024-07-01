@@ -492,6 +492,7 @@
 
 (my-use-package popper
   :ensure t
+  :demand t
   :general
   (my-leader
     "k" '(nil :wk "Popper")
