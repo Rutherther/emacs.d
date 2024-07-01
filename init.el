@@ -501,6 +501,7 @@
     "k j" '(popper-cycle :wk "Popper cycle")
     "k J" '(popper-cycle-backwards :wk "Popper cycle backwards"))
   :custom
+  (popper-mode-line '(:eval (propertize " POP " 'face 'mode-line-emphasis)))
   (popper-echo-dispatch-keys '(?q ?w ?e ?r ?t ?y ?u ?i ?o ?p))
   (popper-group-function #'popper-group-by-directory)
   (popper-reference-buffers
@@ -755,7 +756,6 @@
   :custom
   ((vs-modeline-left
    '("%e"
-     (:eval (when ace-window-display-mode (window-parameter (selected-window) 'ace-window-path)))
      " "
      (:eval (vs-modeline-evil))
      mode-line-process
