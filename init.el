@@ -86,12 +86,11 @@
 (elpaca-wait)
 
 ;; some visual configs
-(my-use-package gruvbox-theme
+(my-use-package color-theme-sanityinc-tomorrow
  :ensure t
  :demand t
  :config
-   (load-theme 'gruvbox-dark-hard t)
-)
+ (load-theme 'sanityinc-tomorrow-night t))
 
 (my-use-package solaire-mode
   :ensure t
