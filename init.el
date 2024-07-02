@@ -901,10 +901,13 @@
 ;;   :after magit
 ;;   :config (magit-todos-mode 1))
 
-(my-use-package git-gutter
+(my-use-package git-gutter-fringe
   :ensure t
-  :demand t
-  :after evil
+  :preface
+  (defun git-gutter-with-find-file (&rest args)
+    (global-git-gutter-mode t)
+    (remove-hook 'find-file-hook #'git-gutter-with-find-file))
+  (add-hook 'find-file-hook #'git-gutter-with-find-file)
   :general
   (my-leader
     "g p" '(git-gutter:previous-hunk :wk "Previous hunk")
@@ -916,9 +919,7 @@
     "g v SPC" '(git-gutter:mark-hunk :wk "Mark hunk"))
   (normal
    "]d" '(git-gutter:next-hunk :wk "Next hunk")
-   "[d" '(git-gutter:previous-hunk :wk "Next hunk"))
-  :config
-  (global-git-gutter-mode 1))
+   "[d" '(git-gutter:previous-hunk :wk "Next hunk")))
 
 (my-use-package git-timemachine
   :ensure t
