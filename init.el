@@ -64,6 +64,8 @@
     "u" '(universal-argument :wk "Universal argument"))
   (general-def 'insert 'override
    "C-\\" '(evil-normal-state :wk "Enter normal state"))
+  (general-def 'visual 'override
+   "C-\\" '(evil-normal-state :wk "Enter normal state"))
   :custom
   (evil-undo-system 'undo-redo)
   (evil-want-integration t)
