@@ -544,6 +544,7 @@
   (aw-dispatch-always t)
   :custom-face
   (aw-background-face ((t (:foreground "dim gray" :background "#1d2021"))))
+  (aw-leading-char-face ((t (:height 3.0 :foreground "#f0c674"))))
   :init
   ;; (defun ace-window-prefix ()
   ;;   (interactive)
