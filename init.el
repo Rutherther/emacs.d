@@ -512,6 +512,7 @@
      "\\*Async Shell Command\\*"
      ;; "^\\*Embark Collect: "
      "\\*vterm\\*"
+     "\\*Python\\*"
      "\\*MATLAB\\*"
      compilation-mode))
   :config
