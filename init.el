@@ -809,7 +809,8 @@
   (my-leader
     "o d" '(dired-jump :wk "Dired"))
   :custom
-  (dired-dwim-target t))
+  (dired-dwim-target t)
+  (dired-vc-rename-file t))
 
 (my-use-package diredfl
   :ensure t
