@@ -494,6 +494,9 @@
 (my-use-package popper
   :ensure t
   :demand t
+  :bind (("C-`"   . popper-toggle)
+         ("M-`"   . popper-cycle)
+         ("C-M-`" . popper-toggle-type))
   :general
   (my-leader
     "k" '(nil :wk "Popper")
@@ -699,6 +702,7 @@
   (enable-recursive-minibuffers t)
   (read-extended-command-predicate #'command-completion-default-include-p)
   (use-dialog-box nil)
+  (ediff-setup-windows-plain 'ediff-setup-windows-plain)
   :init
   (put 'narrow-to-region 'disabled nil)
   (setq minibuffer-prompt-properties
