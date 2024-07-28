@@ -205,13 +205,35 @@
 ;; Early evil stuff is loaded earlier
 
 (my-use-package evil-easymotion
-  :after evil
+  :after (evil evil-snipe)
   :ensure t
   :demand t
   :general
   (my-leader
     "l" '(:keymap evilem-map :wk "Evilem"))
-)
+  :config
+  (evilem-make-motion evilem-motion-forward-word-begin #'evil-forward-word-begin)
+  (evilem-make-motion evilem-motion-forward-WORD-begin #'evil-forward-WORD-begin)
+  (evilem-make-motion evilem-motion-forward-word-end #'evil-forward-word-end)
+  (evilem-make-motion evilem-motion-forward-WORD-end #'evil-forward-WORD-end)
+  (evilem-make-motion evilem-motion-backward-word-begin #'evil-backward-word-begin)
+  (evilem-make-motion evilem-motion-backward-WORD-begin #'evil-backward-WORD-begin)
+  (evilem-make-motion evilem-motion-backward-word-end #'evil-backward-word-end)
+  (evilem-make-motion evilem-motion-backward-WORD-end #'evil-backward-WORD-end)
+
+  (define-key evilem-map "s"
+              (evilem-create 'evil-snipe-repeat
+                             :pre-hook (save-excursion (call-interactively #'evil-snipe-s))
+                             :bind ((evil-snipe-scope 'buffer)
+                                    (evil-snipe-enable-highlight)
+                                    (evil-snipe-enable-incremental-highlight))))
+
+  (define-key evilem-map "S"
+              (evilem-create 'evil-snipe-repeat
+                             :pre-hook (save-excursion (call-interactively #'evil-snipe-s))
+                             :bind ((evil-snipe-scope 'buffer)
+                                    (evil-snipe-enable-highlight)
+                                    (evil-snipe-enable-incremental-highlight)))))
 
 (my-use-package evil-surround
   :after evil
@@ -240,6 +262,12 @@
   :after evil
   :ensure t
   :demand t
+  :hook
+  (magit-mode . turn-off-evil-snipe-override-mode)
+  :custom
+  (evil-snipe-scope 'buffer)
+  (evil-snipe-repeat-keys nil)
+  (evil-snipe-override-evil-repeat-keys t)
   :config
   (evil-snipe-mode))
 
