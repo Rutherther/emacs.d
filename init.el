@@ -907,7 +907,10 @@
     "g c" '(magit-clone :wk "Git clone")
     "g i" '(magit-init :wk "Git init")
     "g ." '(magit-dispatch :wk "Dispatch")
-    "g b" '(magit-blame :wk "Blame"))
+    "g b" '(magit-blame :wk "Blame")
+    "g l" '(magit-log-buffer-file :wk "Log buffer file")
+    "g L" '(magit-log :wk "Log")
+    "g d" '(magit-diff-buffer-file :wk "Diff buffer file"))
   :custom
   (magit-save-repository-buffers 'dontask)
   (magit-diff-refine-hunk 'all)
@@ -1314,8 +1317,8 @@
 
 (my-use-package vhdl-ts-mode
   :ensure (:host github :repo "Rutherther/vhdl-ts-mode")
-  :after vhdl-mode
   :demand t
+  ;; :after vhdl-mode
   :general
   (my-local-leader vhdl-ts-mode-map
     "f" '(nil :wk "Formatting")
