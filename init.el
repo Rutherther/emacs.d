@@ -7,6 +7,9 @@
 (require 'functions)
 (require 'elpaca-loader)
 
+(setq no-littering-etc-directory (expand-file-name "stateful/config" user-emacs-directory))
+(setq no-littering-var-directory (expand-file-name "stateful/data" user-emacs-directory))
+
 ;; Startup time
 (defun efs/display-startup-time ()
   (message
@@ -22,10 +25,7 @@
 ;; Loaded early to prevent all littering
 (my-use-package no-littering
   :ensure (:wait t)
-  :demand t
-  :init
-  (setq no-littering-etc-directory (expand-file-name "stateful/config" user-emacs-directory))
-  (setq no-littering-var-directory (expand-file-name "stateful/data" user-emacs-directory)))
+  :demand t)
 (elpaca-wait) ; No littering
 
 ;; Loaded early to prevent loading unnecessary stuff
@@ -173,7 +173,9 @@
      "XDG_CONFIG_HOME"
      "XDG_CACHE_HOME"
      "XDG_DATA_HOME"
-     "NIX_PATH"))
+     "NIX_PATH"
+     "GUILE_LOAD_PATH"
+     "GUILE_LOAD_COMPILED_PATH"))
   :config
   (unless (memq system-type '(windows-nt android))
     (exec-path-from-shell-initialize))
@@ -1016,8 +1018,8 @@
 
 ;; Vterm
 (my-use-package vterm
-  :ensure t
-  :commands vterm
+  :ensure nil ; I don't know why, but if this is used through guix-emacs, with vterm already available, it asks for the module compilation if ti his t...
+  :demand t ; Prevents asking for vterm module in guix-emacs
   :config
   (add-to-list 'vterm-eval-cmds '("update-pwd" (lambda (path) (setq default-directory path))))
 
@@ -1031,9 +1033,10 @@
 
 (my-use-package vterm-toggle
   :ensure t
+  :after vterm
   :commands vterm-toggle
   :custom
-  (vterm-toggle-scope 'project)
+  (vterm-toggle'-scope 'project)
   (vterm-toggle-project-root t)
   :general
   (my-leader
