@@ -547,6 +547,7 @@
      "\\*vterm\\*"
      "\\*Python\\*"
      "\\*MATLAB\\*"
+     "\\*Geiser Guile REPL\\*"
      compilation-mode))
   :config
   (popper-mode 1)
@@ -1203,6 +1204,14 @@
   :init
   ;; (load (expand-file-name "nix-mode-mmm.el" (file-name-directory (locate-library "nix-mode"))))
   )
+
+;; Guile and Guix
+(my-use-package geiser
+   :ensure t)
+(my-use-package geiser-guile
+   :ensure t)
+(my-use-package guix
+  :ensure t)
 
 ;; Rust
 (my-use-package rust-mode
