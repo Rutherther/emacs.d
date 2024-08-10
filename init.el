@@ -1036,7 +1036,7 @@
   :after vterm
   :commands vterm-toggle
   :custom
-  (vterm-toggle'-scope 'project)
+  (vterm-toggle-scope 'project)
   (vterm-toggle-project-root t)
   :general
   (my-leader
