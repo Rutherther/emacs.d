@@ -86,16 +86,16 @@
 (elpaca-wait)
 
 ;; some visual configs
-(my-use-package color-theme-sanityinc-tomorrow
+(my-use-package monokai-theme
  :ensure t
  :demand t
  :config
- (load-theme 'sanityinc-tomorrow-night t))
+ (load-theme 'monokai t))
 
-(my-use-package solaire-mode
-  :ensure t
-  :config
-  (solaire-global-mode 1))
+;; (my-use-package solaire-mode
+;;   :ensure t
+;;   :config
+;;   (solaire-global-mode 1))
 
 (setq-default inhibit-startup-screen t)
 (setq inhibit-splash-screen t)
