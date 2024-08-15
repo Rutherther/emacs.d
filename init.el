@@ -503,6 +503,7 @@
   (add-to-list 'display-buffer-alist
             '((or (major-mode . Info-mode)
                   (major-mode . help-mode)
+                  (major-mode . Man-mode)
                   (major-mode . helpful-mode))
               (display-buffer-reuse-window
                 display-buffer-in-side-window)
