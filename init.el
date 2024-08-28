@@ -1326,7 +1326,13 @@
   (add-to-list 'eglot-server-programs
                 '(vhdl-mode . ("vhdl_ls")))
   (my/indent-variable-mode-alist-add vhdl-mode vhdl-basic-offset)
-)
+
+  (defun my/electric-space-not-in-strings (fun &rest args)
+    (if (vhdl-in-string-p)
+        (apply 'self-insert-command args)
+      (apply fun args)))
+
+  (advice-add 'vhdl-electric-space :around #'my/electric-space-not-in-strings))
 
 (my-use-package vhdl-ts-mode
   :ensure (:host github :repo "Rutherther/vhdl-ts-mode")
