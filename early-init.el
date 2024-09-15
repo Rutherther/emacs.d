@@ -3,6 +3,8 @@
 
 (eval-and-compile (setq load-prefer-newer t))
 
+(setq native-comp-jit-compilation t)
+
 ;; ------------------------------------------------------------------------------------------
 ;; Speed optimization taken from igloo.el, see https://github.com/VojtechStep/igloo.el
 ;; ------------------------------------------------------------------------------------------
