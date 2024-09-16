@@ -1316,12 +1316,6 @@
   (vhdl-reset-name "rst_in")
   (vhdl-basic-offset 2)
   (vhdl-end-comment-column 300)
-  :init
-  ;; VHDL lsp servers don't have good completion capabilities for now.
-  ;; Remove this when they are ready.
-  (defun my/disable-eglot-completion ()
-    (make-local-variable 'eglot-ignored-server-capabilites)
-    (add-to-list 'eglot-ignored-server-capabilities :completionProvider))
   :config
   (add-to-list 'eglot-server-programs
                 '(vhdl-mode . ("vhdl_ls")))
